@@ -1,14 +1,14 @@
 {
-  "name": "Design System MCP",
+  "name": "Palette",
   "description": "Transform Figma designs into React/Vue components using your existing design system",
   "version": "1.0.0",
   "author": "Jongho",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/design-system-mcp.git"
+    "url": "https://github.com/Opti-kjh/palatte.git"
   },
-  "homepage": "https://github.com/your-username/design-system-mcp#readme",
+  "homepage": "https://github.com/Opti-kjh/palatte#readme",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -36,7 +36,7 @@
     "figma_token": "required"
   },
   "installation": {
-    "command": "npm install design-system-mcp",
+    "command": "npm install palette",
     "setup": [
       "Get Figma Access Token from Figma → Settings → Account → Personal Access Tokens",
       "Set environment variable: export FIGMA_ACCESS_TOKEN='your_token_here'",
@@ -85,9 +85,9 @@
   ],
   "cursor_config": {
     "mcpServers": {
-      "design-system-mcp": {
+      "palette": {
         "command": "npx",
-        "args": ["design-system-mcp"],
+        "args": ["palette"],
         "env": {
           "FIGMA_ACCESS_TOKEN": "your_figma_token_here"
         }

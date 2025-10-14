@@ -1,11 +1,11 @@
 {
-  "name": "design-system-mcp",
+  "name": "palette",
   "version": "1.0.0",
   "description": "MCP server for converting Figma designs to React/Vue components using existing design system",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "design-system-mcp": "dist/index.js"
+    "palette": "dist/index.js"
   },
   "files": [
     "dist/**/*",
@@ -42,11 +42,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/design-system-mcp.git"
+    "url": "https://github.com/Opti-kjh/palatte.git"
   },
-  "homepage": "https://github.com/your-username/design-system-mcp#readme",
+  "homepage": "https://github.com/Opti-kjh/palatte#readme",
   "bugs": {
-    "url": "https://github.com/your-username/design-system-mcp/issues"
+    "url": "https://github.com/Opti-kjh/palatte/issues"
   },
   "engines": {
     "node": ">=18.0.0"

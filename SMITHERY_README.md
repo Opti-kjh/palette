@@ -1,4 +1,4 @@
-# 디자인 시스템 MCP
+# Palette
 
 🚀 **기존 디자인 시스템을 활용하여 Figma 디자인을 React/Vue 컴포넌트로 변환**
 
@@ -25,7 +25,7 @@
 ### 설치
 
 ```bash
-npm install design-system-mcp
+npm install palette
 ```
 
 ### 환경 설정
@@ -46,9 +46,9 @@ Cursor AI MCP 설정에 추가:
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "npx",
-      "args": ["design-system-mcp"],
+      "args": ["palette"],
       "env": {
         "FIGMA_ACCESS_TOKEN": "your_figma_token_here"
       }
@@ -192,8 +192,8 @@ import { Card } from 'design-system/Card';
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-username/design-system-mcp.git
-cd design-system-mcp
+git clone https://github.com/Opti-kjh/palatte.git
+cd palette
 
 # 의존성 설치
 npm install
@@ -235,13 +235,13 @@ MIT 라이선스 - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세
 
 ## 🆘 지원
 
-- **이슈**: [GitHub Issues](https://github.com/your-username/design-system-mcp/issues)
-- **문서**: [전체 문서](https://github.com/your-username/design-system-mcp#readme)
+- **이슈**: [GitHub Issues](https://github.com/Opti-kjh/palatte/issues)
+- **문서**: [전체 문서](https://github.com/Opti-kjh/palatte#readme)
 
 ## 🔗 링크
 
-- **저장소**: https://github.com/your-username/design-system-mcp
-- **NPM 패키지**: https://www.npmjs.com/package/design-system-mcp
+- **저장소**: https://github.com/Opti-kjh/palatte
+- **NPM 패키지**: https://www.npmjs.com/package/palette
 - **디자인 시스템 React**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system-react
 - **디자인 시스템 Vue**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
 

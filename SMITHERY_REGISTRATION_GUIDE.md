@@ -33,9 +33,9 @@
 # GitHub에 저장소 생성 후
 git init
 git add .
-git commit -m "Initial commit: Design System MCP"
+git commit -m "Initial commit: Palette"
 git branch -M main
-git remote add origin https://github.com/your-username/design-system-mcp.git
+git remote add origin https://github.com/Opti-kjh/palatte.git
 git push -u origin main
 ```
 
@@ -56,19 +56,19 @@ npm publish
 3. **다음 정보 입력**:
 
 #### 기본 정보
-- **Name**: `디자인 시스템 MCP`
+- **Name**: `Palette`
 - **Description**: `기존 디자인 시스템을 활용하여 Figma 디자인을 React/Vue 컴포넌트로 변환`
 - **Category**: `디자인 & 개발`
 - **Tags**: `figma, react, vue, design-system, mcp, ai`
 
 #### 기술 정보
-- **Repository URL**: `https://github.com/your-username/design-system-mcp`
-- **NPM Package**: `design-system-mcp`
+- **Repository URL**: `https://github.com/Opti-kjh/palatte`
+- **NPM Package**: `palette`
 - **Version**: `1.0.0`
 - **License**: `MIT`
 
 #### 설치 정보
-- **Install Command**: `npm install design-system-mcp`
+- **Install Command**: `npm install palette`
 - **Requirements**: 
   - Node.js >= 18.0.0
   - Figma 액세스 토큰
@@ -77,9 +77,9 @@ npm publish
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "npx",
-      "args": ["design-system-mcp"],
+      "args": ["palette"],
       "env": {
         "FIGMA_ACCESS_TOKEN": "your_figma_token_here"
       }
@@ -139,16 +139,16 @@ npm publish
 
 ## 🔗 등록 후 링크들
 
-- **GitHub 저장소**: https://github.com/your-username/design-system-mcp
-- **NPM 패키지**: https://www.npmjs.com/package/design-system-mcp
-- **smithery.ai 페이지**: https://smithery.ai/mcp/design-system-mcp
-- **문서**: https://github.com/your-username/design-system-mcp#readme
+- **GitHub 저장소**: https://github.com/Opti-kjh/palatte
+- **NPM 패키지**: https://www.npmjs.com/package/palette
+- **smithery.ai 페이지**: https://smithery.ai/mcp/palette
+- **문서**: https://github.com/Opti-kjh/palatte#readme
 
 ## 📞 지원 및 문의
 
-- **GitHub 이슈**: https://github.com/your-username/design-system-mcp/issues
+- **GitHub 이슈**: https://github.com/Opti-kjh/palatte/issues
 - **이메일**: jongho@example.com
-- **문서**: https://github.com/your-username/design-system-mcp#readme
+- **문서**: https://github.com/Opti-kjh/palatte#readme
 
 ---
 

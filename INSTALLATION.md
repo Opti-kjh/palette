@@ -1,6 +1,6 @@
-# Design System MCP 설치 가이드
+# Palette 설치 가이드
 
-이 가이드는 팀원들이 Design System MCP를 Cursor IDE에 설정하는 방법을 설명합니다.
+이 가이드는 팀원들이 Palette를 Cursor IDE에 설정하는 방법을 설명합니다.
 
 ## 1. 프로젝트 설치
 
@@ -9,7 +9,7 @@
 ```bash
 # 프로젝트 클론
 git clone <repository-url>
-cd design-system-mcp
+cd palette
 
 # 의존성 설치 및 빌드
 npm install
@@ -23,7 +23,7 @@ npm link
 ```bash
 # 프로젝트 클론
 git clone <repository-url>
-cd design-system-mcp
+cd palette
 
 # 의존성 설치 및 빌드
 npm install
@@ -80,9 +80,9 @@ Cursor IDE의 MCP 설정 파일은 다음 위치에 있습니다:
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "npx",
-      "args": ["design-system-mcp"],
+      "args": ["palette"],
       "env": {
         "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
       }
@@ -98,9 +98,9 @@ Cursor IDE의 MCP 설정 파일은 다음 위치에 있습니다:
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "node",
-      "args": ["/absolute/path/to/design-system-mcp/dist/index.js"],
+      "args": ["/absolute/path/to/palette/dist/index.js"],
       "env": {
         "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
       }
@@ -152,7 +152,7 @@ https://www.figma.com/file/your-file-id/your-design을 React 컴포넌트로 변
 ```bash
 # 팀원들이 클론할 수 있도록 저장소 공유
 git clone <repository-url>
-cd design-system-mcp
+cd palette
 npm install
 ```
 
@@ -163,7 +163,7 @@ npm install
 npm publish
 
 # 팀원들이 설치
-npm install -g design-system-mcp
+npm install -g palette
 ```
 
 ### 3. Docker 사용 (고급)
@@ -185,10 +185,10 @@ CMD ["node", "dist/index.js"]
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "npm",
       "args": ["run", "mcp:dev"],
-      "cwd": "/path/to/design-system-mcp",
+      "cwd": "/path/to/palette",
       "env": {
         "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
       }

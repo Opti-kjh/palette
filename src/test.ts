@@ -5,7 +5,7 @@ import { FigmaService } from './services/figma.js';
 import { CodeGenerator } from './services/code-generator.js';
 
 async function testServices() {
-  console.log('🧪 Testing Design System MCP Services...\n');
+  console.log('🧪 Testing Palette Services...\n');
 
   // Test Design System Service
   console.log('1. Testing Design System Service...');

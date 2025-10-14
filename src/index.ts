@@ -15,7 +15,7 @@ import { CodeGenerator } from './services/code-generator.js';
 // MCP 서버 초기화
 const server = new Server(
   {
-    name: 'design-system-mcp',
+    name: 'palette',
     version: '1.0.0',
   }
 );
@@ -209,7 +209,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('Design System MCP server running on stdio');
+  console.error('Palette server running on stdio');
 }
 
 main().catch((error) => {

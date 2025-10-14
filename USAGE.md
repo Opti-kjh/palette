@@ -1,4 +1,4 @@
-# Design System MCP 사용법
+# Palette 사용법
 
 ## 설치 및 설정
 
@@ -27,9 +27,9 @@ Cursor AI의 설정에서 MCP 서버를 추가합니다:
 ```json
 {
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "node",
-      "args": ["/path/to/design-system-mcp/dist/index.js"],
+      "args": ["/path/to/palette/dist/index.js"],
       "env": {
         "FIGMA_ACCESS_TOKEN": "your_figma_access_token_here"
       }

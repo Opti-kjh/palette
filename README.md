@@ -1,4 +1,4 @@
-# Design System MCP
+# Palette
 
 Figma 디자인을 기존 Design System 컴포넌트를 활용하여 React/Vue 코드로 변환하는 MCP(Model Context Protocol) 서버입니다.
 

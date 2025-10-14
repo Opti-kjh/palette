@@ -1,10 +1,10 @@
 @echo off
-REM Design System MCP 설정 스크립트 (Windows)
+REM Palette 설정 스크립트 (Windows)
 REM 팀원들이 쉽게 설치할 수 있도록 도와주는 스크립트입니다.
 
 setlocal enabledelayedexpansion
 
-echo 🚀 Design System MCP 설정을 시작합니다...
+echo 🚀 Palette 설정을 시작합니다...
 
 REM 1. 의존성 확인
 echo 📋 의존성 확인 중...
@@ -89,7 +89,7 @@ if exist "%CURSOR_MCP_FILE%" (
     echo.
     echo {
     echo   "mcpServers": {
-    echo     "design-system-mcp": {
+    echo     "palette": {
     echo       "command": "node",
     echo       "args": ["%CURRENT_DIR%/dist/index.js"],
     echo       "env": {
@@ -103,7 +103,7 @@ if exist "%CURSOR_MCP_FILE%" (
     (
         echo {
         echo   "mcpServers": {
-        echo     "design-system-mcp": {
+        echo     "palette": {
         echo       "command": "node",
         echo       "args": ["%CURRENT_DIR%/dist/index.js"],
         echo       "env": {
@@ -118,7 +118,7 @@ if exist "%CURSOR_MCP_FILE%" (
 
 REM 6. 완료 메시지
 echo.
-echo ✅ 🎉 Design System MCP 설정이 완료되었습니다!
+echo ✅ 🎉 Palette 설정이 완료되었습니다!
 echo.
 echo 다음 단계:
 echo 1. .env 파일에서 FIGMA_ACCESS_TOKEN을 설정하세요

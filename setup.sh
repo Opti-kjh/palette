@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Design System MCP 설정 스크립트
+# Palette 설정 스크립트
 # 팀원들이 쉽게 설치할 수 있도록 도와주는 스크립트입니다.
 
 set -e
 
-echo "🚀 Design System MCP 설정을 시작합니다..."
+echo "🚀 Palette 설정을 시작합니다..."
 
 # 색상 정의
 RED='\033[0;31m'
@@ -113,7 +113,7 @@ fi
 CURRENT_DIR=$(pwd)
 MCP_CONFIG='{
   "mcpServers": {
-    "design-system-mcp": {
+    "palette": {
       "command": "node",
       "args": ["'$CURRENT_DIR'/dist/index.js"],
       "env": {
@@ -144,7 +144,7 @@ fi
 
 # 7. 완료 메시지
 echo ""
-print_success "🎉 Design System MCP 설정이 완료되었습니다!"
+print_success "🎉 Palette 설정이 완료되었습니다!"
 echo ""
 echo "다음 단계:"
 echo "1. .env 파일에서 FIGMA_ACCESS_TOKEN을 설정하세요"

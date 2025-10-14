@@ -1,6 +1,6 @@
-# 🚀 Design System MCP 빠른 시작 가이드
+# 🚀 Palette 빠른 시작 가이드
 
-팀원들이 Design System MCP를 빠르게 설정하고 사용하는 방법을 설명합니다.
+팀원들이 Palette를 빠르게 설정하고 사용하는 방법을 설명합니다.
 
 ## 간단 설정
 
@@ -9,7 +9,7 @@
 ```bash
 # 프로젝트 클론
 git clone <repository-url>
-cd design-system-mcp
+cd palette
 
 # 자동 설치 (macOS/Linux)
 ./setup.sh
@@ -151,6 +151,6 @@ import { Card } from '@dealicious/design-system/Card';
 ```bash
 # 팀원들이 실행할 명령어
 git clone <repository-url>
-cd design-system-mcp
+cd palette
 ./setup.sh  # 또는 setup.bat
 ```

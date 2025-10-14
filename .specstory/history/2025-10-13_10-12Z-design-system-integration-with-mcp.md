@@ -220,11 +220,11 @@ Lines added: 29, lines removed: 3
     "license": "MIT",
 +   "repository": {
 +     "type": "git",
-+     "url": "https://github.com/your-username/design-system-mcp.git"
++     "url": "https://github.com/Opti-kjh/palatte.git"
 +   },
-+   "homepage": "https://github.com/your-username/design-system-mcp#readme",
++   "homepage": "https://github.com/Opti-kjh/palatte#readme",
 +   "bugs": {
-+     "url": "https://github.com/your-username/design-system-mcp/issues"
++     "url": "https://github.com/Opti-kjh/palatte/issues"
 +   },
 +   "engines": {
 +     "node": ">=18.0.0"
@@ -447,7 +447,7 @@ Lines added: 250, lines removed: 1
 + 
 + ```bash
 + # Clone the repository
-+ git clone https://github.com/your-username/design-system-mcp.git
++ git clone https://github.com/Opti-kjh/palatte.git
 + cd design-system-mcp
 + 
 + # Install dependencies
@@ -490,12 +490,12 @@ Lines added: 250, lines removed: 1
 + 
 + ## 🆘 Support
 + 
-+ - **Issues**: [GitHub Issues](https://github.com/your-username/design-system-mcp/issues)
-+ - **Documentation**: [Full Documentation](https://github.com/your-username/design-system-mcp#readme)
++ - **Issues**: [GitHub Issues](https://github.com/Opti-kjh/palatte/issues)
++ - **Documentation**: [Full Documentation](https://github.com/Opti-kjh/palatte#readme)
 + 
 + ## 🔗 Links
 + 
-+ - **Repository**: https://github.com/your-username/design-system-mcp
++ - **Repository**: https://github.com/Opti-kjh/palatte
 + - **NPM Package**: https://www.npmjs.com/package/design-system-mcp
 + - **Design System React**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system-react
 + - **Design System Vue**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
@@ -533,9 +533,9 @@ Lines added: 103, lines removed: 1
 +   "license": "MIT",
 +   "repository": {
 +     "type": "git",
-+     "url": "https://github.com/your-username/design-system-mcp.git"
++     "url": "https://github.com/Opti-kjh/palatte.git"
 +   },
-+   "homepage": "https://github.com/your-username/design-system-mcp#readme",
++   "homepage": "https://github.com/Opti-kjh/palatte#readme",
 +   "keywords": [
 +     "mcp",
 +     "model-context-protocol",
@@ -821,7 +821,7 @@ Lines added: 155, lines removed: 1
 + git add .
 + git commit -m "Initial commit: Design System MCP"
 + git branch -M main
-+ git remote add origin https://github.com/your-username/design-system-mcp.git
++ git remote add origin https://github.com/Opti-kjh/palatte.git
 + git push -u origin main
 + ```
 + 
@@ -848,7 +848,7 @@ Lines added: 155, lines removed: 1
 + - **Tags**: `figma, react, vue, design-system, mcp, ai`
 + 
 + #### 기술 정보
-+ - **Repository URL**: `https://github.com/your-username/design-system-mcp`
++ - **Repository URL**: `https://github.com/Opti-kjh/palatte`
 + - **NPM Package**: `design-system-mcp`
 + - **Version**: `1.0.0`
 + - **License**: `MIT`
@@ -925,16 +925,16 @@ Lines added: 155, lines removed: 1
 + 
 + ## 🔗 등록 후 링크들
 + 
-+ - **GitHub Repository**: https://github.com/your-username/design-system-mcp
++ - **GitHub Repository**: https://github.com/Opti-kjh/palatte
 + - **NPM Package**: https://www.npmjs.com/package/design-system-mcp
 + - **smithery.ai 페이지**: https://smithery.ai/mcp/design-system-mcp
-+ - **Documentation**: https://github.com/your-username/design-system-mcp#readme
++ - **Documentation**: https://github.com/Opti-kjh/palatte#readme
 + 
 + ## 📞 지원 및 문의
 + 
-+ - **GitHub Issues**: https://github.com/your-username/design-system-mcp/issues
++ - **GitHub Issues**: https://github.com/Opti-kjh/palatte/issues
 + - **Email**: jongho@example.com
-+ - **Documentation**: https://github.com/your-username/design-system-mcp#readme
++ - **Documentation**: https://github.com/Opti-kjh/palatte#readme
 + 
 + ---
 + 
