@@ -40,7 +40,7 @@ export class DesignSystemService {
         name: 'Button',
         description: 'Primary button component with multiple variants',
         category: 'Actions',
-        importPath: 'design-system-react/Button',
+        importPath: '@dealicious/design-system-react/src/components/ssm-button',
         props: [
           {
             name: 'variant',
@@ -99,7 +99,7 @@ export class DesignSystemService {
         name: 'Input',
         description: 'Text input component with validation support',
         category: 'Forms',
-        importPath: 'design-system-react/Input',
+        importPath: '@dealicious/design-system-react/src/components/ssm-input',
         props: [
           {
             name: 'type',
@@ -157,7 +157,7 @@ export class DesignSystemService {
         name: 'Card',
         description: 'Card container component for content grouping',
         category: 'Layout',
-        importPath: 'design-system-react/Card',
+        importPath: '@dealicious/design-system-react/src/components/ssm-card',
         props: [
           {
             name: 'title',
@@ -203,7 +203,7 @@ export class DesignSystemService {
         name: 'Modal',
         description: 'Modal dialog component for overlays',
         category: 'Overlays',
-        importPath: 'design-system-react/Modal',
+        importPath: '@dealicious/design-system-react/src/components/ssm-modal',
         props: [
           {
             name: 'isOpen',
@@ -243,7 +243,7 @@ export class DesignSystemService {
         name: 'Table',
         description: 'Data table component with sorting and pagination',
         category: 'Data Display',
-        importPath: 'design-system-react/Table',
+        importPath: '@dealicious/design-system-react/src/components/ssm-table',
         props: [
           {
             name: 'data',
@@ -288,7 +288,7 @@ export class DesignSystemService {
         name: 'Button',
         description: 'Primary button component with multiple variants',
         category: 'Actions',
-        importPath: 'design-system/Button',
+        importPath: '@dealicious/design-system/src/components/ssm-button',
         props: [
           {
             name: 'variant',
@@ -336,7 +336,7 @@ export class DesignSystemService {
         name: 'Input',
         description: 'Text input component with validation support',
         category: 'Forms',
-        importPath: 'design-system/Input',
+        importPath: '@dealicious/design-system/src/components/ssm-input',
         props: [
           {
             name: 'type',
@@ -388,7 +388,7 @@ export class DesignSystemService {
         name: 'Card',
         description: 'Card container component for content grouping',
         category: 'Layout',
-        importPath: 'design-system/Card',
+        importPath: '@dealicious/design-system/src/components/ssm-card',
         props: [
           {
             name: 'title',

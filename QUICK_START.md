@@ -68,8 +68,8 @@ https://www.figma.com/file/your-file-id/your-design 파일을 분석해줘
 ### React 컴포넌트
 ```tsx
 import React from 'react';
-import { Button } from '@dealicious/design-system-react/Button';
-import { Card } from '@dealicious/design-system-react/Card';
+import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
+import { Card } from '@dealicious/design-system-react/src/components/ssm-card';
 
 interface MyComponentProps {
   // Add your props here
@@ -103,8 +103,8 @@ export default MyComponent;
 </template>
 
 <script setup lang="ts">
-import { Button } from '@dealicious/design-system/Button';
-import { Card } from '@dealicious/design-system/Card';
+import Button from '@dealicious/design-system/src/components/ssm-button';
+import Card from '@dealicious/design-system/src/components/ssm-card';
 </script>
 
 <style scoped>

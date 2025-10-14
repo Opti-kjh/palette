@@ -54,9 +54,9 @@ export class CodeGenerator {
 // Vue: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
 // 
 // To use these components, install the packages:
-// npm install design-system-react design-system
+// npm install @dealicious/design-system-react @dealicious/design-system
 // or
-// yarn add design-system-react design-system
+// yarn add @dealicious/design-system-react @dealicious/design-system
 `;
 
     return `${repositoryInfo}\n${importsCode}${dependenciesCode}\n\n${componentCode}`;
@@ -79,7 +79,8 @@ export class CodeGenerator {
     // Generate imports
     for (const mapping of mappedComponents) {
       if (mapping.designSystemComponent) {
-        imports.add(`import { ${mapping.designSystemComponent.name} } from '${mapping.designSystemComponent.importPath}';`);
+        // Vue는 default import 사용
+        imports.add(`import ${mapping.designSystemComponent.name} from '${mapping.designSystemComponent.importPath}';`);
         if (mapping.designSystemComponent.dependencies) {
           mapping.designSystemComponent.dependencies.forEach(dep => dependencies.add(dep));
         }

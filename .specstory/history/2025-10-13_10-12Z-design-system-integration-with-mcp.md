@@ -496,7 +496,7 @@ Lines added: 250, lines removed: 1
 + ## 🔗 Links
 + 
 + - **Repository**: https://github.com/Opti-kjh/palatte
-+ - **NPM Package**: https://www.npmjs.com/package/design-system-mcp
++ - **NPM Package**: https://www.npmjs.com/package/palette
 + - **Design System React**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system-react
 + - **Design System Vue**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
 + 

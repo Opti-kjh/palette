@@ -775,9 +775,342 @@ Lines added: 1, lines removed: 1
 
 Tool use: **search_replace**
 
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/SMITHERY_README.md</summary>
+
+**Chunk 1**
+Lines added: 2, lines removed: 2
+
+```diff
+@@ -47,7 +47,7 @@
+  {
+    "mcpServers": {
+-     "design-system-mcp": {
++     "palette": {
+        "command": "npx",
+-       "args": ["design-system-mcp"],
++       "args": ["palette"],
+        "env": {
+          "FIGMA_ACCESS_TOKEN": "your_figma_token_here"
+```
+
+</details>
+
 ---
 
+Tool use: **search_replace**
 
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/SMITHERY_README.md</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -194,5 +194,5 @@
+  # 저장소 클론
+  git clone https://github.com/Opti-kjh/palatte.git
+- cd design-system-mcp
++ cd palette
+  
+  # 의존성 설치
+```
+
+</details>
+
+---
+
+Tool use: **search_replace**
+
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/SMITHERY_README.md</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -242,5 +242,5 @@
+  
+  - **저장소**: https://github.com/Opti-kjh/palatte
+- - **NPM 패키지**: https://www.npmjs.com/package/design-system-mcp
++ - **NPM 패키지**: https://www.npmjs.com/package/palette
+  - **디자인 시스템 React**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system-react
+  - **디자인 시스템 Vue**: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
+```
+
+</details>
+
+---
+
+이제 다른 문서 파일들도 확인해보겠습니다.
+
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/QUICK_START.md
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/INSTALLATION.md
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/USAGE.md
+
+---
+
+이제 모든 문서 파일들이 "Palette"로 업데이트되었습니다. 마지막으로 변경사항을 검증해보겠습니다.
+
+
+---
+
+Tool use: **todo_write**
+
+## Todo List
+
+- [x] 프로젝트에서 'Design System MCP' 텍스트가 포함된 파일들 검색
+- [x] 각 파일에서 텍스트를 Palette로 변경
+- [x] 문서 파일들 업데이트
+- [-] 변경사항 검증
+
+---
+
+Tool use: **grep**
+
+---
+
+Tool use: **grep**
+
+<details>
+<summary>Grep for "design-system-mcp" • 4 matches</summary>
+
+Output mode: files_with_matches
+
+
+| File |
+|------|
+| `./setup.bat` |
+| `./package-lock.json` |
+| `./cursor-mcp-config.json` |
+| `./mcp-config.json` |
+
+
+</details>
+
+---
+
+아직 몇 개 파일에서 "design-system-mcp"가 남아있습니다. 이 파일들도 확인해보겠습니다.
+
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/cursor-mcp-config.json
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/mcp-config.json
+
+---
+
+이 설정 파일들도 업데이트하겠습니다.
+
+
+---
+
+Tool use: **search_replace**
+
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/cursor-mcp-config.json</summary>
+
+**Chunk 1**
+Lines added: 2, lines removed: 2
+
+```diff
+@@ -1,7 +1,7 @@
+  {
+    "mcpServers": {
+-     "design-system-mcp": {
++     "palette": {
+        "command": "npx",
+-       "args": ["design-system-mcp"],
++       "args": ["palette"],
+        "env": {
+          "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+```
+
+</details>
+
+---
+
+Tool use: **search_replace**
+
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/mcp-config.json</summary>
+
+**Chunk 1**
+Lines added: 2, lines removed: 2
+
+```diff
+@@ -1,7 +1,7 @@
+  {
+    "mcpServers": {
+-     "design-system-mcp": {
++     "palette": {
+        "command": "npx",
+-       "args": ["design-system-mcp"],
++       "args": ["palette"],
+        "env": {
+          "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+```
+
+</details>
+
+---
+
+이제 setup.bat 파일에서 남은 부분도 확인해보겠습니다.
+
+
+---
+
+Tool use: **grep**
+
+<details>
+<summary>Grep for "design-system-mcp" in "/Users/eos/workspaces/study/palette/setup.bat" • 1 match</summary>
+
+Output mode: content
+
+
+| Content | Line |
+|------|------|
+| `echo     "design-system-mcp": \{` | L92 |
+
+
+</details>
+
+---
+
+setup.bat 파일에서 아직 하나 더 남아있습니다. 이를 수정하겠습니다.
+
+
+---
+
+Tool use: **read_file**
+
+Read file: /Users/eos/workspaces/study/palette/setup.bat
+
+---
+
+Tool use: **search_replace**
+
+
+<details><summary>Edit file: /Users/eos/workspaces/study/palette/setup.bat</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -90,5 +90,5 @@
+      echo {
+      echo   "mcpServers": {
+-     echo     "design-system-mcp": {
++     echo     "palette": {
+      echo       "command": "node",
+      echo       "args": ["%CURRENT_DIR%/dist/index.js"],
+```
+
+</details>
+
+---
+
+이제 최종 검증을 해보겠습니다.
+
+
+---
+
+Tool use: **grep**
+
+<details>
+<summary>Grep for "design-system-mcp" • 1 match</summary>
+
+Output mode: files_with_matches
+
+
+| File |
+|------|
+| `./package-lock.json` |
+
+
+</details>
+
+---
+
+package-lock.json 파일은 npm이 자동으로 생성하는 파일이므로 수동으로 수정하지 않는 것이 좋습니다. 이 파일은 `npm install`을 다시 실행하면 자동으로 업데이트됩니다.
+
+
+---
+
+Tool use: **todo_write**
+
+## Todo List
+
+- [x] 프로젝트에서 'Design System MCP' 텍스트가 포함된 파일들 검색
+- [x] 각 파일에서 텍스트를 Palette로 변경
+- [x] 문서 파일들 업데이트
+- [x] 변경사항 검증
+
+---
+
+## 완료 요약
+
+프로젝트 이름을 "Design System MCP"에서 "Palette"로 성공적으로 변경했습니다! 
+
+### 변경된 파일들:
+
+1. **소스 파일들**:
+   - `src/index.ts` - MCP 서버 이름 변경
+   - `src/index-simple.ts` - MCP 서버 이름 변경  
+   - `src/test.ts` - 테스트 메시지 변경
+
+2. **설정 파일들**:
+   - `env.example` - 환경 변수 설정 파일
+   - `setup.bat` - Windows 설정 스크립트
+   - `setup.sh` - macOS/Linux 설정 스크립트
+   - `cursor-mcp-config.json` - Cursor MCP 설정
+   - `mcp-config.json` - MCP 설정
+   - `LICENSE` - 라이선스 파일
+
+3. **문서 파일들**:
+   - `README.md` - 메인 README (이미 "Palette"로 설정됨)
+   - `SMITHERY_README.md` - Smithery.ai용 README
+   - `SMITHERY_REGISTRATION_GUIDE.md` - 등록 가이드
+   - `QUICK_START.md` - 빠른 시작 가이드
+   - `INSTALLATION.md` - 설치 가이드
+   - `USAGE.md` - 사용법 가이드
+
+### 주요 변경사항:
+
+- **프로젝트 이름**: "Design System MCP" → "Palette"
+- **MCP 서버 이름**: "design-system-mcp" → "palette"
+- **NPM 패키지명**: "design-system-mcp" → "palette"
+- **모든 문서와 설정 파일**에서 일관되게 변경
+
+### 참고사항:
+
+- `package-lock.json` 파일은 npm이 자동으로 관리하므로 수동 수정하지 않았습니다
+- `package.json`은 이미 "palette"로 설정되어 있었습니다
+- 모든 변경사항이 일관되게 적용되었습니다
+
+이제 프로젝트가 "Palette"라는 새로운 이름으로 완전히 업데이트되었습니다! 🎨
 
 ---
 
