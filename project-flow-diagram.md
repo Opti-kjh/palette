@@ -4,28 +4,28 @@
 
 ```mermaid
 graph TB
-    subgraph "Palette MCP Server"
-        A[MCP Protocol Layer]
-        B[Service Layer]
-        C[External APIs]
+    subgraph "Palette MCP 서버"
+        A[MCP 프로토콜 레이어]
+        B[서비스 레이어]
+        C[외부 API]
     end
     
-    subgraph "MCP Protocol Layer"
-        D[List Tools Handler]
-        E[Call Tool Handler]
-        F[Error Handler]
+    subgraph "MCP 프로토콜 레이어"
+        D[도구 목록 핸들러]
+        E[도구 호출 핸들러]
+        F[에러 핸들러]
     end
     
-    subgraph "Service Layer"
-        G[FigmaService]
-        H[DesignSystemService]
-        I[CodeGenerator]
+    subgraph "서비스 레이어"
+        G[Figma 서비스]
+        H[디자인 시스템 서비스]
+        I[코드 생성기]
     end
     
-    subgraph "External APIs"
+    subgraph "외부 API"
         J[Figma API]
-        K[Design System Components]
-        L[GitHub Repository]
+        K[디자인 시스템 컴포넌트]
+        L[GitHub 저장소]
     end
     
     A --> D
@@ -49,17 +49,17 @@ graph TB
 graph TD
     A[사용자 요청] --> B{도구 선택}
     
-    B --> C[convert_figma_to_react]
-    B --> D[convert_figma_to_vue]
-    B --> E[list_design_system_components]
-    B --> F[analyze_figma_file]
+    B --> C[Figma를 React로 변환]
+    B --> D[Figma를 Vue로 변환]
+    B --> E[디자인 시스템 컴포넌트 목록]
+    B --> F[Figma 파일 분석]
     
-    C --> G[FigmaService.getFigmaData]
+    C --> G[Figma 서비스.데이터 가져오기]
     D --> G
     F --> G
     
-    G --> H[DesignSystemService.findBestMatch]
-    H --> I[CodeGenerator.generateComponent]
+    G --> H[디자인 시스템 서비스.최적 매칭]
+    H --> I[코드 생성기.컴포넌트 생성]
     I --> J[React/Vue 코드 반환]
     
     E --> K[사용 가능한 컴포넌트 목록 반환]
@@ -69,10 +69,10 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Figma Design] --> B[FigmaService]
+    A[Figma 디자인] --> B[Figma 서비스]
     
-    subgraph "FigmaService 처리 과정"
-        B1[URL에서 File ID 추출]
+    subgraph "Figma 서비스 처리 과정"
+        B1[URL에서 파일 ID 추출]
         B2[Figma API 호출]
         B3[파일 데이터 파싱]
         B4[노드 구조 분석]
@@ -85,11 +85,11 @@ graph TD
     B3 --> B4
     B4 --> B5
     
-    B5 --> C[DesignSystemService]
+    B5 --> C[디자인 시스템 서비스]
     
-    subgraph "DesignSystemService 처리 과정"
+    subgraph "디자인 시스템 서비스 처리 과정"
         C1[사용 가능한 컴포넌트 목록 관리]
-        C2[Figma 노드와 Design System 매핑]
+        C2[Figma 노드와 디자인 시스템 매핑]
         C3[최적 컴포넌트 선택]
     end
     
@@ -97,9 +97,9 @@ graph TD
     C1 --> C2
     C2 --> C3
     
-    C3 --> D[CodeGenerator]
+    C3 --> D[코드 생성기]
     
-    subgraph "CodeGenerator 처리 과정"
+    subgraph "코드 생성기 처리 과정"
         D1[컴포넌트 구조 생성]
         D2[Props 매핑]
         D3[Import 문 생성]
@@ -116,23 +116,23 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Figma Node] --> B[Node Analysis]
+    A[Figma 노드] --> B[노드 분석]
     
-    subgraph "Node Analysis"
-        B1[Node Type: TEXT, FRAME, RECTANGLE, COMPONENT]
-        B2[Node Name: 버튼, 입력, 카드 등]
-        B3[Node Properties: 크기, 색상, 스타일]
+    subgraph "노드 분석"
+        B1[노드 타입: 텍스트, 프레임, 사각형, 컴포넌트]
+        B2[노드 이름: 버튼, 입력, 카드 등]
+        B3[노드 속성: 크기, 색상, 스타일]
     end
     
     B --> B1
     B --> B2
     B --> B3
     
-    B1 --> C[Component Matching Logic]
+    B1 --> C[컴포넌트 매칭 로직]
     B2 --> C
     B3 --> C
     
-    subgraph "Component Matching Logic"
+    subgraph "컴포넌트 매칭 로직"
         C1[직접 이름 매칭]
         C2[패턴 기반 매칭]
         C3[타입 기반 매칭]
@@ -144,10 +144,10 @@ graph TD
     C2 --> C3
     C3 --> C4
     
-    C1 --> D[Button 컴포넌트]
-    C2 --> E[Input 컴포넌트]
-    C3 --> F[Card 컴포넌트]
-    C4 --> G[기본 Card 컴포넌트]
+    C1 --> D[버튼 컴포넌트]
+    C2 --> E[입력 컴포넌트]
+    C3 --> F[카드 컴포넌트]
+    C4 --> G[기본 카드 컴포넌트]
 ```
 
 ## 5. 생성되는 코드 구조
@@ -156,15 +156,15 @@ graph TD
 graph TD
     A[코드 생성 시작] --> B[Import 문 생성]
     
-    B --> C[Design System 패키지 Import]
+    B --> C[디자인 시스템 패키지 Import]
     C --> D[React/Vue 기본 Import]
     
     D --> E[컴포넌트 구조 생성]
     
     subgraph "컴포넌트 구조"
-        E1[Interface/Props 정의]
+        E1[인터페이스/Props 정의]
         E2[컴포넌트 함수 생성]
-        E3[JSX/Template 생성]
+        E3[JSX/템플릿 생성]
         E4[Export 문 생성]
     end
     
@@ -206,19 +206,19 @@ graph TD
 ```mermaid
 sequenceDiagram
     participant U as 사용자
-    participant M as MCP Server
-    participant F as FigmaService
-    participant D as DesignSystemService
-    participant C as CodeGenerator
+    participant M as MCP 서버
+    participant F as Figma 서비스
+    participant D as 디자인 시스템 서비스
+    participant C as 코드 생성기
     
-    U->>M: convert_figma_to_react 요청
+    U->>M: Figma를 React로 변환 요청
     M->>F: getFigmaData(figmaUrl, nodeId)
     F->>F: Figma API 호출
     F-->>M: FigmaFile 데이터
     
     M->>D: findBestMatch(figmaComponent, 'react')
     D->>D: 컴포넌트 매핑 로직 실행
-    D-->>M: DesignSystemComponent
+    D-->>M: 디자인 시스템 컴포넌트
     
     M->>C: generateReactComponent(figmaData, componentName)
     C->>C: 컴포넌트 구조 생성
@@ -235,11 +235,11 @@ sequenceDiagram
 graph TD
     A[요청 처리 시작] --> B{에러 발생?}
     
-    B -->|No| C[정상 처리]
-    B -->|Yes| D[에러 타입 확인]
+    B -->|아니오| C[정상 처리]
+    B -->|예| D[에러 타입 확인]
     
     D --> E[Figma API 에러]
-    D --> F[Design System 에러]
+    D --> F[디자인 시스템 에러]
     D --> G[코드 생성 에러]
     D --> H[기타 에러]
     
