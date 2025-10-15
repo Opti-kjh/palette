@@ -88,33 +88,33 @@ export class FigmaService {
   constructor() {
     this.accessToken = process.env.FIGMA_ACCESS_TOKEN || '';
     if (!this.accessToken) {
-      console.warn('FIGMA_ACCESS_TOKEN not found in environment variables');
+      console.warn('환경 변수에서 FIGMA_ACCESS_TOKEN을 찾을 수 없습니다.');
     }
   }
 
   /**
-   * Extract file ID from Figma URL
+   * Figma URL에서 파일 ID 추출
    */
   private extractFileId(url: string): string {
     const match = url.match(/\/file\/([a-zA-Z0-9]+)/);
     if (match) {
       return match[1];
     }
-    // If it's already a file ID
+    // 이미 파일 ID인 경우
     if (/^[a-zA-Z0-9]+$/.test(url)) {
       return url;
     }
-    throw new Error('Invalid Figma URL format');
+    throw new Error('잘못된 Figma URL 형식입니다.');
   }
 
   /**
-   * Get Figma file data
+   * Figma 파일 데이터 가져오기
    */
   async getFigmaData(url: string, nodeId?: string): Promise<FigmaFile> {
     const fileId = this.extractFileId(url);
     
     if (!this.accessToken) {
-      throw new Error('Figma access token is required');
+      throw new Error('Figma 액세스 토큰이 필요합니다.');
     }
 
     try {
@@ -144,7 +144,7 @@ export class FigmaService {
   }
 
   /**
-   * Analyze Figma file structure
+   * Figma 파일 구조 분석
    */
   async analyzeFigmaFile(url: string): Promise<string> {
     const fileData = await this.getFigmaData(url);
@@ -155,7 +155,7 @@ export class FigmaService {
   }
 
   /**
-   * Analyze file structure and extract component information
+   * 파일 구조 분석 및 컴포넌트 정보 추출
    */
   private analyzeFileStructure(file: FigmaFile): FigmaAnalysis {
     const stats = this.countNodes(file.document);
@@ -172,7 +172,7 @@ export class FigmaService {
   }
 
   /**
-   * Count different types of nodes in the file
+   * 파일에 있는 다른 유형의 노드 수 세기
    */
   private countNodes(node: FigmaNode): {
     total: number;
@@ -199,7 +199,7 @@ export class FigmaService {
   }
 
   /**
-   * Suggest mappings between Figma components and design system components
+   * Figma 컴포넌트와 디자인 시스템 컴포넌트 간의 매핑 제안
    */
   private suggestComponentMappings(figmaComponents: string[]): Array<{
     figmaComponent: string;
@@ -212,7 +212,7 @@ export class FigmaService {
       confidence: number;
     }> = [];
 
-    // Common component name mappings
+    // 일반적인 컴포넌트 이름 매핑
     const commonMappings: Record<string, string[]> = {
       'button': ['Button', 'Btn', 'PrimaryButton', 'SecondaryButton'],
       'input': ['Input', 'TextField', 'TextInput'],
@@ -264,7 +264,7 @@ export class FigmaService {
   }
 
   /**
-   * Format analysis results for display
+   * 분석 결과 표시 형식 지정
    */
   private formatAnalysis(analysis: FigmaAnalysis): string {
     let result = `## Figma File Analysis\n\n`;
@@ -293,7 +293,7 @@ export class FigmaService {
   }
 
   /**
-   * Extract design tokens from Figma file
+   * Figma 파일에서 디자인 토큰 추출
    */
   extractDesignTokens(file: FigmaFile): Record<string, any> {
     const tokens: Record<string, any> = {
@@ -303,14 +303,14 @@ export class FigmaService {
       borderRadius: {},
     };
 
-    // Extract colors from styles
+    // 스타일에서 색상 추출
     for (const [key, style] of Object.entries(file.styles)) {
       if (style.styleType === 'FILL') {
         tokens.colors[key] = style.description || key;
       }
     }
 
-    // Extract typography
+    // 타이포그래피 추출
     for (const [key, style] of Object.entries(file.styles)) {
       if (style.styleType === 'TEXT') {
         tokens.typography[key] = {

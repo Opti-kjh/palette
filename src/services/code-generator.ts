@@ -12,7 +12,7 @@ export class CodeGenerator {
   constructor(private designSystemService: DesignSystemService) {}
 
   /**
-   * Generate React component from Figma data
+   * Figma 데이터에서 React 컴포넌트 생성
    */
   async generateReactComponent(
     figmaData: FigmaFile,
@@ -22,7 +22,7 @@ export class CodeGenerator {
     const dependencies = new Set<string>();
     let componentCode = '';
 
-    // Analyze Figma structure and map to design system components
+    // Figma 구조 분석 및 디자인 시스템 컴포넌트 매핑
     const mappedComponents = this.mapFigmaToDesignSystem(figmaData.document, 'react');
     
     // Generate imports
@@ -35,20 +35,20 @@ export class CodeGenerator {
       }
     }
 
-    // Generate component structure
+    // 컴포넌트 구조 생성
     componentCode += this.generateReactComponentStructure(
       componentName,
       figmaData.document,
       mappedComponents
     );
 
-    // Add imports at the top
+    // 최상단에 임포트 추가
     const importsCode = Array.from(imports).join('\n');
     const dependenciesCode = Array.from(dependencies).length > 0 
       ? `\n// Dependencies: ${Array.from(dependencies).join(', ')}` 
       : '';
 
-    // Add GitHub repository information
+    // GitHub 저장소 정보 추가
     const repositoryInfo = `// Design System Components from GitHub:
 // React: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system-react
 // Vue: https://github.com/dealicious-inc/ssm-web/tree/master/packages/design-system
@@ -63,7 +63,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate Vue component from Figma data
+   * Figma 데이터에서 Vue 컴포넌트 생성
    */
   async generateVueComponent(
     figmaData: FigmaFile,
@@ -73,13 +73,13 @@ export class CodeGenerator {
     const dependencies = new Set<string>();
     let componentCode = '';
 
-    // Analyze Figma structure and map to design system components
+    // Figma 구조 분석 및 디자인 시스템 컴포넌트 매핑
     const mappedComponents = this.mapFigmaToDesignSystem(figmaData.document, 'vue');
     
     // Generate imports
     for (const mapping of mappedComponents) {
       if (mapping.designSystemComponent) {
-        // Vue는 default import 사용
+        // Vue는 default import 사용하는 것을 권장
         imports.add(`import ${mapping.designSystemComponent.name} from '${mapping.designSystemComponent.importPath}';`);
         if (mapping.designSystemComponent.dependencies) {
           mapping.designSystemComponent.dependencies.forEach(dep => dependencies.add(dep));
@@ -87,14 +87,14 @@ export class CodeGenerator {
       }
     }
 
-    // Generate component structure
+    // 컴포넌트 구조 생성
     componentCode += this.generateVueComponentStructure(
       componentName,
       figmaData.document,
       mappedComponents
     );
 
-    // Add imports at the top
+    // 최상단에 임포트 추가
     const importsCode = Array.from(imports).join('\n');
     const dependenciesCode = Array.from(dependencies).length > 0 
       ? `\n// Dependencies: ${Array.from(dependencies).join(', ')}` 
@@ -104,7 +104,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Map Figma nodes to design system components
+   * Figma 노드를 디자인 시스템 컴포넌트에 매핑
    */
   private mapFigmaToDesignSystem(
     node: FigmaNode,
@@ -120,11 +120,11 @@ export class CodeGenerator {
       confidence: number;
     }> = [];
 
-    // Analyze current node
+    // 현재 노드 분석
     const mapping = this.analyzeNode(node, framework);
     mappings.push(mapping);
 
-    // Recursively analyze children
+    // 자식 노드 재귀적 분석
     if (node.children) {
       for (const child of node.children) {
         mappings.push(...this.mapFigmaToDesignSystem(child, framework));
@@ -135,8 +135,8 @@ export class CodeGenerator {
   }
 
   /**
-   * Analyze a single Figma node and find best design system match
-   * ALWAYS returns a Design System component - never null
+   * 단일 Figma 노드 분석 및 디자인 시스템 최적 매칭 찾기
+   * 항상 디자인 시스템 컴포넌트를 반환 - null이 아님
    */
   private analyzeNode(
     node: FigmaNode,
@@ -146,11 +146,11 @@ export class CodeGenerator {
     designSystemComponent: DesignSystemComponent;
     confidence: number;
   } {
-    // Skip invisible nodes
+    // 보이지 않는 노드 건너뛰기
     if (node.visible === false) {
       const defaultComponent = this.designSystemService.getComponent('Card', framework);
       if (!defaultComponent) {
-        // This should never happen as Card is always available
+        // Card는 항상 사용 가능하므로 이 경우는 절대 발생하지 않음
         throw new Error('No Design System components available');
       }
       return {
@@ -160,10 +160,10 @@ export class CodeGenerator {
       };
     }
 
-    // Try to find a matching component based on node properties
+    // 노드 속성에 따라 매칭 컴포넌트 찾기
     let component = this.findComponentByNodeProperties(node, framework);
     
-    // If no match found, use default component based on node type
+    // 매칭 컴포넌트가 없으면 노드 유형에 따라 기본 컴포넌트 사용
     if (!component) {
       component = this.getDefaultComponentByType(node, framework);
     }
@@ -176,8 +176,8 @@ export class CodeGenerator {
   }
 
   /**
-   * Find design system component based on Figma node properties
-   * Enhanced matching with more patterns
+   * Figma 노드 속성에 따라 디자인 시스템 컴포넌트 찾기
+   * 일반적인 패턴 기반 유사 매칭
    */
   private findComponentByNodeProperties(
     node: FigmaNode,
@@ -186,11 +186,11 @@ export class CodeGenerator {
     const nodeName = node.name.toLowerCase();
     const nodeType = node.type;
 
-    // 1. Direct name matching
+    // 1. 직접 이름 매칭
     let component = this.designSystemService.findBestMatch(nodeName, framework);
     if (component) return component;
 
-    // 2. Enhanced pattern matching
+    // 2. 일반적인 패턴 기반 유사 매칭
     const enhancedMappings = [
       { patterns: ['btn', 'button', 'click', 'submit', 'action'], component: 'Button' },
       { patterns: ['input', 'field', 'text', 'search', 'email'], component: 'Input' },
@@ -206,36 +206,36 @@ export class CodeGenerator {
       }
     }
 
-    // 3. Type-based matching with enhanced logic
+    // 3. 타입 기반 매칭
     switch (nodeType) {
       case 'TEXT':
-        // Text nodes - check if they're button labels
+        // Text 노드 - 버튼 레이블인지 확인
         if (nodeName.includes('button') || nodeName.includes('btn') || nodeName.includes('click')) {
           return this.designSystemService.getComponent('Button', framework);
         }
-        // Default text to Card for content
+        // 기본 텍스트로 Card 사용
         return this.designSystemService.getComponent('Card', framework);
         
       case 'FRAME':
-        // Frames - enhanced matching
+        // Frames - 일반적인 패턴 기반 유사 매칭
         if (nodeName.includes('card') || nodeName.includes('panel') || nodeName.includes('container')) {
           return this.designSystemService.getComponent('Card', framework);
         }
         if (nodeName.includes('modal') || nodeName.includes('dialog') || nodeName.includes('popup')) {
           return this.designSystemService.getComponent('Modal', framework);
         }
-        // Default frame to Card
+        // 기본 프레임으로 Card 사용
         return this.designSystemService.getComponent('Card', framework);
         
       case 'COMPONENT':
-        // Component instances - try enhanced matching
+        // Component 인스턴스 - 일반적인 패턴 기반 유사 매칭
         component = this.designSystemService.findBestMatch(nodeName, framework);
         if (component) return component;
-        // Default component to Card
+        // 기본 컴포넌트로 Card 사용
         return this.designSystemService.getComponent('Card', framework);
         
       case 'RECTANGLE':
-        // Rectangles - enhanced matching
+        // Rectangles - 일반적인 패턴 기반 유사 매칭
         if (nodeName.includes('button') || nodeName.includes('btn') || nodeName.includes('click')) {
           return this.designSystemService.getComponent('Button', framework);
         }
@@ -245,17 +245,17 @@ export class CodeGenerator {
         if (nodeName.includes('card') || nodeName.includes('panel') || nodeName.includes('container')) {
           return this.designSystemService.getComponent('Card', framework);
         }
-        // Default rectangle to Button (most common interactive element)
+        // 기본 사각형으로 Button 사용 (가장 일반적인 상호 작용 요소)
         return this.designSystemService.getComponent('Button', framework);
         
       default:
-        // Default fallback to Card
+        // 기본 폴백으로 Card 사용
         return this.designSystemService.getComponent('Card', framework);
     }
   }
 
   /**
-   * Get default Design System component
+   * 기본 디자인 시스템 컴포넌트 가져오기
    */
   private async getDefaultComponent(framework: 'react' | 'vue'): Promise<DesignSystemComponent> {
     const cardComponent = this.designSystemService.getComponent('Card', framework);
@@ -266,13 +266,13 @@ export class CodeGenerator {
   }
 
   /**
-   * Get default component based on node type
+   * 노드 유형에 따라 기본 컴포넌트 가져오기
    */
   private getDefaultComponentByType(node: FigmaNode, framework: 'react' | 'vue'): DesignSystemComponent {
     const nodeType = node.type;
     const nodeName = node.name.toLowerCase();
 
-    // Smart defaults based on node type and name
+    // 노드 유형과 이름에 따라 스마트 기본값
     switch (nodeType) {
       case 'TEXT':
         if (nodeName.includes('button') || nodeName.includes('btn') || nodeName.includes('click')) {
@@ -311,16 +311,16 @@ export class CodeGenerator {
         break;
     }
     
-    // Final fallback - use Card as last resort
+    // 최종 폴백 - Card를 마지막 수단으로 사용
     const finalCardComponent = this.designSystemService.getComponent('Card', framework);
     if (finalCardComponent) return finalCardComponent;
     
-    // This should never happen as Card is always available
+    // Card는 항상 사용 가능하므로 이 경우는 절대 발생하지 않음
     throw new Error('No Design System components available');
   }
 
   /**
-   * Generate React component structure
+   * React 컴포넌트 구조 생성
    */
   private generateReactComponentStructure(
     componentName: string,
@@ -341,7 +341,7 @@ export class CodeGenerator {
     code += `  return (\n`;
     code += `    <div className="${this.generateClassName(rootNode)}">\n`;
     
-    // Generate JSX based on mapped components
+    // 매핑된 컴포넌트에 따라 JSX 생성
     code += this.generateReactJSX(rootNode, mappedComponents, 2);
     
     code += `    </div>\n`;
@@ -353,7 +353,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate Vue component structure
+   * Vue 컴포넌트 구조 생성
    */
   private generateVueComponentStructure(
     componentName: string,
@@ -367,7 +367,7 @@ export class CodeGenerator {
     let code = `<template>\n`;
     code += `  <div class="${this.generateClassName(rootNode)}">\n`;
     
-    // Generate template based on mapped components
+    // 매핑된 컴포넌트에 따라 템플릿 생성
     code += this.generateVueTemplate(rootNode, mappedComponents, 2);
     
     code += `  </div>\n`;
@@ -387,7 +387,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate React JSX from Figma nodes
+   * Figma 노드에서 React JSX 생성
    */
   private generateReactJSX(
     node: FigmaNode,
@@ -401,10 +401,10 @@ export class CodeGenerator {
     const indentStr = '  '.repeat(indent);
     let jsx = '';
 
-    // Find mapping for current node
+    // 현재 노드에 대한 매핑 찾기
     const mapping = mappedComponents.find(m => m.figmaNode.id === node.id);
     
-    // ALWAYS use Design System component - never fallback to HTML
+    // 항상 디자인 시스템 컴포넌트 사용 - HTML로 폴백하지 않음
     if (mapping?.designSystemComponent) {
       const component = mapping.designSystemComponent;
       const props = this.generateComponentProps(node, component);
@@ -420,7 +420,7 @@ export class CodeGenerator {
       
       jsx += `${indentStr}</${component.name}>\n`;
     } else {
-      // This should never happen with our enhanced mapping, but if it does, use Card as fallback
+      // 일반적인 패턴 기반 유사 매칭을 사용하므로 이 경우는 절대 발생하지 않음
       console.warn(`No Design System component found for node ${node.id}, using Card as fallback`);
       const fallbackComponent = this.designSystemService.getComponent('Card', 'react');
       if (fallbackComponent) {
@@ -442,7 +442,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate Vue template from Figma nodes
+   * Figma 노드에서 Vue 템플릿 생성
    */
   private generateVueTemplate(
     node: FigmaNode,
@@ -456,10 +456,10 @@ export class CodeGenerator {
     const indentStr = '  '.repeat(indent);
     let template = '';
 
-    // Find mapping for current node
+    // 현재 노드에 대한 매핑 찾기
     const mapping = mappedComponents.find(m => m.figmaNode.id === node.id);
     
-    // ALWAYS use Design System component - never fallback to HTML
+    // 항상 디자인 시스템 컴포넌트 사용 - HTML로 폴백하지 않음
     if (mapping?.designSystemComponent) {
       const component = mapping.designSystemComponent;
       const props = this.generateComponentProps(node, component);
@@ -475,7 +475,7 @@ export class CodeGenerator {
       
       template += `${indentStr}</${component.name}>\n`;
     } else {
-      // This should never happen with our enhanced mapping, but if it does, use Card as fallback
+      // 일반적인 패턴 기반 유사 매칭을 사용하므로 이 경우는 절대 발생하지 않음
       console.warn(`No Design System component found for node ${node.id}, using Card as fallback`);
       const fallbackComponent = this.designSystemService.getComponent('Card', 'vue');
       if (fallbackComponent) {
@@ -497,7 +497,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate component props based on Figma node and design system component
+   * Figma 노드와 디자인 시스템 컴포넌트에 따라 컴포넌트 속성 생성
    */
   private generateComponentProps(
     node: FigmaNode,
@@ -505,7 +505,7 @@ export class CodeGenerator {
   ): string {
     const props: string[] = [];
 
-    // Add common props based on node properties
+    // 노드 속성에 따라 공통 속성 추가
     if (node.characters && component.name === 'Button') {
       props.push(`>${node.characters}`);
     }
@@ -518,7 +518,7 @@ export class CodeGenerator {
       props.push(`title="${node.characters || node.name}"`);
     }
 
-    // Add size props based on bounding box
+    // 바운딩 박스에 따라 크기 속성 추가
     if (node.absoluteBoundingBox) {
       const { width, height } = node.absoluteBoundingBox;
       
@@ -533,7 +533,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Get appropriate HTML tag name for Figma node
+   * Figma 노드에 대한 적절한 HTML 태그 이름 가져오기
    */
   private getHTMLTagName(node: FigmaNode): string {
     switch (node.type) {
@@ -551,7 +551,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate CSS class name from Figma node
+   * Figma 노드에서 CSS 클래스 이름 생성
    */
   private generateClassName(node: FigmaNode): string {
     const name = node.name
@@ -564,7 +564,7 @@ export class CodeGenerator {
   }
 
   /**
-   * Generate inline styles from Figma node properties
+   * Figma 노드 속성에서 인라인 스타일 생성
    */
   private generateInlineStyle(node: FigmaNode): string {
     const styles: string[] = [];

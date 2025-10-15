@@ -28,20 +28,45 @@ import { Table } from '@dealicious/design-system-react/src/components/ssm-table'
 
 ### 🎨 사용 가능한 컴포넌트들
 
-#### Actions
-- **Button**: 다양한 variant (primary, secondary, tertiary, danger)
-- **Input**: 폼 입력 컴포넌트
-- **Modal**: 다이얼로그 컴포넌트
+#### Actions & Navigation
+- **ssm-button**: 다양한 variant (primary, secondary, tertiary, danger)
+- **ssm-text-link**: 링크 버튼 컴포넌트
+- **ssm-arrow-pagination**: 화살표 페이지네이션
+- **ssm-pagination**: 일반 페이지네이션
 
-#### Layout  
-- **Card**: 콘텐츠 그룹핑용 컨테이너
-- **Table**: 데이터 테이블 (정렬, 페이지네이션 지원)
+#### Layout & Containers
+- **ssm-accordion**: 아코디언 컴포넌트
+- **ssm-tab**: 탭 컴포넌트
+- **ssm-layer-popup**: 팝업 레이어
+- **ssm-layer-alert**: 알림 레이어
 
-#### Forms
-- **Input**: 텍스트 입력 (validation 지원)
+#### Forms & Inputs
+- **ssm-input**: 기본 입력 필드
+- **ssm-text-field**: 텍스트 필드 (라벨 포함)
+- **ssm-check**: 체크박스 컴포넌트
+- **ssm-radio**: 라디오 버튼 컴포넌트
+- **ssm-switch**: 스위치 컴포넌트
+- **ssm-dropdown**: 드롭다운 컴포넌트
 
 #### Data Display
-- **Table**: 데이터 테이블 컴포넌트
+- **ssm-table**: 데이터 테이블 컴포넌트
+- **ssm-badge**: 배지 컴포넌트
+- **ssm-chip**: 칩 컴포넌트
+- **ssm-tag**: 태그 컴포넌트
+- **ssm-labeled-text**: 라벨이 있는 텍스트
+- **ssm-text**: 기본 텍스트 컴포넌트
+
+#### Feedback & Status
+- **ssm-toast**: 토스트 알림
+- **ssm-notice**: 공지사항 컴포넌트
+- **ssm-error**: 에러 표시 컴포넌트
+- **ssm-helper-text**: 도움말 텍스트
+- **ssm-tooltip**: 툴팁 컴포넌트
+- **ssm-loading-spinner**: 로딩 스피너
+
+#### Icons & Media
+- **ssm-icon**: 아이콘 컴포넌트
+- **env-badge**: 환경 배지 (React만)
 
 ## 설치 및 설정
 
@@ -56,14 +81,18 @@ yarn add @dealicious/design-system
 
 ### 2. 컴포넌트 사용
 ```tsx
-import { Button, Card, Input, Table } from '@dealicious/design-system-react';
+import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
+import { Input } from '@dealicious/design-system-react/src/components/ssm-input';
+import { Badge } from '@dealicious/design-system-react/src/components/ssm-badge';
+import { Toast } from '@dealicious/design-system-react/src/components/ssm-toast';
 
 function MyComponent() {
   return (
-    <Card title="제목" elevation={2}>
+    <div>
       <Input placeholder="입력하세요" />
       <Button variant="primary">저장</Button>
-    </Card>
+      <Badge variant="success">완료</Badge>
+    </div>
   );
 }
 ```
@@ -74,20 +103,23 @@ function MyComponent() {
 ```tsx
 // Design System 컴포넌트들을 조합하여 생성
 import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
-import { Card } from '@dealicious/design-system-react/src/components/ssm-card';
+import { Input } from '@dealicious/design-system-react/src/components/ssm-input';
+import { Badge } from '@dealicious/design-system-react/src/components/ssm-badge';
 import { Table } from '@dealicious/design-system-react/src/components/ssm-table';
+import { Text } from '@dealicious/design-system-react/src/components/ssm-text';
+import { LoadingSpinner } from '@dealicious/design-system-react/src/components/ssm-loading-spinner';
 
 const ExchangeRateCard = () => {
   return (
-    <Card title="중화권 구독 결제 내역" elevation={2}>
+    <div className="exchange-rate-card">
       <div className="filter-section">
+        <Input placeholder="검색어 입력" />
         <Button variant="primary">검색</Button>
       </div>
       
       <div className="stats-section">
-        <Card elevation={1}>
-          <div className="stat-item">총 결제 건수: 1,234</div>
-        </Card>
+        <Badge variant="info">총 결제 건수: 1,234</Badge>
+        <Text size="large">환율 정보</Text>
       </div>
       
       <Table 
@@ -96,7 +128,9 @@ const ExchangeRateCard = () => {
         sortable={true}
         pagination={true}
       />
-    </Card>
+      
+      <LoadingSpinner size="medium" />
+    </div>
   );
 };
 ```
@@ -114,8 +148,9 @@ yarn dev
 
 ### 2. Design System 매핑
 - Figma 컴포넌트 → Design System 컴포넌트 자동 매핑
-- Button, Input, Card, Table, Modal 등으로 변환
+- ssm-button, ssm-input, ssm-badge, ssm-table, ssm-toast 등으로 변환
 - 별도 CSS 없이 Design System 스타일 사용
+- 30개 이상의 컴포넌트 자동 매핑 지원
 
 ## 장점
 
@@ -141,4 +176,5 @@ yarn dev
 이 프로젝트의 목적은 **별도의 CSS를 생성하는 것이 아니라**, 기존 Design System 컴포넌트들을 활용하여 Figma 디자인을 React/Vue 컴포넌트로 변환하는 것입니다. 
 
 모든 스타일링은 Design System에서 제공되며, 개발자는 비즈니스 로직에만 집중할 수 있습니다.
+
 

@@ -31,10 +31,12 @@ export class DesignSystemService {
   }
 
   /**
-   * Initialize available components from the design system
+   * 디자인 시스템(React, Vue) 컴포넌트 메타데이터 제공 필요.
+   * 1. 메타데이터 구조 정의
+   * 2. 패키지에 manifest 추가.
+   * 3. 디자인 시스템 패키지에서 export 된 컴포넌트 목록을 초기화.
    */
   private initializeComponents(): void {
-    // React Design System Components
     this.reactComponents = [
       {
         name: 'Button',
@@ -282,7 +284,6 @@ export class DesignSystemService {
       },
     ];
 
-    // Vue Design System Components
     this.vueComponents = [
       {
         name: 'Button',
@@ -429,14 +430,14 @@ export class DesignSystemService {
   }
 
   /**
-   * Get available components for a specific framework
+   * 프레임워크(React 또는 Vue)에 대해 사용 가능한 구성 요소 가져오기
    */
   async getAvailableComponents(framework: 'react' | 'vue'): Promise<DesignSystemComponent[]> {
     return framework === 'react' ? this.reactComponents : this.vueComponents;
   }
 
   /**
-   * Find the best matching component for a Figma component
+   * Figma 컴포넌트(FigmaNode)에 가장 잘 맞는 컴포넌트(DesignSystemComponent) 찾기
    */
   findBestMatch(figmaComponentName: string, framework: 'react' | 'vue'): DesignSystemComponent | null {
     const components = framework === 'react' ? this.reactComponents : this.vueComponents;
@@ -447,20 +448,20 @@ export class DesignSystemService {
     );
     if (directMatch) return directMatch;
 
-    // Fuzzy matching based on common patterns
+    // 패턴 기반 유사 매칭
     const lowerName = figmaComponentName.toLowerCase();
     
     for (const component of components) {
       const componentName = component.name.toLowerCase();
       
-      // Check if the component name is contained in the figma name or vice versa
+      // Figma 이름에 컴포넌트 이름이 포함되어 있는지 확인
       if (lowerName.includes(componentName) || componentName.includes(lowerName)) {
         return component;
       }
       
-      // Check for common variations
+      // 일반적인 변형 확인
       const variations = [
-        componentName + 's', // plural
+        componentName + 's', // 복수형
         componentName.replace('button', 'btn'),
         componentName.replace('input', 'field'),
         componentName.replace('card', 'panel'),
@@ -477,7 +478,7 @@ export class DesignSystemService {
   }
 
   /**
-   * Get component by name
+   * 이름으로 컴포넌트 가져오기
    */
   getComponent(name: string, framework: 'react' | 'vue'): DesignSystemComponent | null {
     const components = framework === 'react' ? this.reactComponents : this.vueComponents;
@@ -485,7 +486,7 @@ export class DesignSystemService {
   }
 
   /**
-   * Get components by category
+   * 카테고리로 컴포넌트 가져오기
    */
   getComponentsByCategory(category: string, framework: 'react' | 'vue'): DesignSystemComponent[] {
     const components = framework === 'react' ? this.reactComponents : this.vueComponents;
@@ -493,7 +494,7 @@ export class DesignSystemService {
   }
 
   /**
-   * Get all available categories
+   * 모든 가능한 카테고리 가져오기
    */
   getCategories(framework: 'react' | 'vue'): string[] {
     const components = framework === 'react' ? this.reactComponents : this.vueComponents;
