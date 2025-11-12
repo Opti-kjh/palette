@@ -4,9 +4,7 @@
   "description": "MCP server for converting Figma designs to React/Vue components using existing design system",
   "main": "dist/index.js",
   "type": "module",
-  "bin": {
-    "palette": "dist/index.js"
-  },
+  "bin": "dist/index.js",
   "files": [
     "dist/**/*",
     "README.md",
@@ -54,6 +52,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.4.0",
     "axios": "^1.6.0",
+    "dotenv": "^17.2.3",
     "figma-api": "^1.11.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

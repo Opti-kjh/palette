@@ -1,11 +1,20 @@
 import { FigmaFile, FigmaNode } from './figma.js';
 import { DesignSystemService, DesignSystemComponent } from './design-system.js';
+import { saveFile, saveMetadata, generateRequestId, getRequestFolderPath } from '../utils/request-manager.js';
 
 export interface GeneratedComponent {
   name: string;
   code: string;
   imports: string[];
   dependencies: string[];
+}
+
+export interface GeneratedFiles {
+  requestId: string;
+  folderPath: string;
+  componentFile: string;
+  htmlFile?: string;
+  metadataFile: string;
 }
 
 export class CodeGenerator {
@@ -63,6 +72,45 @@ export class CodeGenerator {
   }
 
   /**
+   * React 컴포넌트 생성 및 파일 저장
+   */
+  async generateAndSaveReactComponent(
+    figmaData: FigmaFile,
+    componentName: string,
+    figmaUrl: string,
+    nodeId?: string
+  ): Promise<GeneratedFiles> {
+    const requestId = generateRequestId();
+    const folderPath = getRequestFolderPath(requestId);
+    
+    // React 컴포넌트 코드 생성
+    const reactCode = await this.generateReactComponent(figmaData, componentName);
+    
+    // 컴포넌트 파일 저장
+    const componentFile = await saveFile(requestId, `${componentName}.tsx`, reactCode);
+    
+    // HTML 미리보기 파일 생성 및 저장
+    const htmlContent = this.generateHTMLPreview(reactCode, componentName);
+    const htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    
+    // 메타데이터 저장
+    const metadataFile = await saveMetadata(requestId, {
+      type: 'react',
+      componentName,
+      figmaUrl,
+      nodeId,
+    });
+    
+    return {
+      requestId,
+      folderPath,
+      componentFile,
+      htmlFile,
+      metadataFile,
+    };
+  }
+
+  /**
    * Figma 데이터에서 Vue 컴포넌트 생성
    */
   async generateVueComponent(
@@ -101,6 +149,134 @@ export class CodeGenerator {
       : '';
 
     return `${importsCode}${dependenciesCode}\n\n${componentCode}`;
+  }
+
+  /**
+   * Vue 컴포넌트 생성 및 파일 저장
+   */
+  async generateAndSaveVueComponent(
+    figmaData: FigmaFile,
+    componentName: string,
+    figmaUrl: string,
+    nodeId?: string
+  ): Promise<GeneratedFiles> {
+    const requestId = generateRequestId();
+    const folderPath = getRequestFolderPath(requestId);
+    
+    // Vue 컴포넌트 코드 생성
+    const vueCode = await this.generateVueComponent(figmaData, componentName);
+    
+    // 컴포넌트 파일 저장
+    const componentFile = await saveFile(requestId, `${componentName}.vue`, vueCode);
+    
+    // HTML 미리보기 파일 생성 및 저장
+    const htmlContent = this.generateHTMLPreview(vueCode, componentName, 'vue');
+    const htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    
+    // 메타데이터 저장
+    const metadataFile = await saveMetadata(requestId, {
+      type: 'vue',
+      componentName,
+      figmaUrl,
+      nodeId,
+    });
+    
+    return {
+      requestId,
+      folderPath,
+      componentFile,
+      htmlFile,
+      metadataFile,
+    };
+  }
+
+  /**
+   * HTML 미리보기 파일 생성
+   */
+  private generateHTMLPreview(
+    componentCode: string,
+    componentName: string,
+    framework: 'react' | 'vue' = 'react'
+  ): string {
+    const escapedCode = this.escapeHtml(componentCode);
+    
+    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${componentName} - Preview</title>
+  <script crossorigin src="https://unpkg.com/react@19/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@19/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .preview {
+      margin-top: 30px;
+      padding: 20px;
+      border: 2px dashed #dee2e6;
+      border-radius: 4px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>${componentName} - ${framework === 'react' ? 'React' : 'Vue'} 컴포넌트 미리보기</h1>
+    <div class="preview">
+      <div id="root"></div>
+    </div>
+  </div>
+  <script type="text/babel">
+    // 모의 Design System 컴포넌트는 여기에 추가됩니다
+    // 실제 Design System 패키지 설치가 필요합니다
+    
+    const cleanCode = ${JSON.stringify(componentCode)}
+      .replace(/import[^;]+;/g, '')
+      .replace(/\/\/[^\\n]*/g, '')
+      .replace(/interface[^\\{]*\\{[^\\}]*\\}/g, '')
+      .replace(/React\\.FC<[^>]*>/g, '')
+      .replace(/export default ${componentName};/g, '')
+      .replace(new RegExp(\`const ${componentName}:.*?=\`, 'g'), \`const ${componentName} = \`);
+    
+    try {
+      const transformedCode = Babel.transform(cleanCode, { presets: ['react'] }).code;
+      eval(transformedCode);
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(React.createElement(${componentName}, {}));
+    } catch (error) {
+      document.getElementById('root').innerHTML = '<p style="color: red;">렌더링 오류: ' + error.message + '</p>';
+    }
+  </script>
+</body>
+</html>`;
+  }
+
+  /**
+   * HTML 이스케이프
+   */
+  private escapeHtml(text: string): string {
+    const map: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, (m) => map[m]);
   }
 
   /**

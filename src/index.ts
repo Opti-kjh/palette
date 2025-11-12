@@ -1,5 +1,16 @@
 #!/usr/bin/env node
 
+// .env 파일 로드
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// 프로젝트 루트의 .env 파일 로드
+dotenv.config({ path: join(__dirname, '..', '.env') });
+
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -8,6 +19,7 @@ import {
   Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import { readFile } from 'fs/promises';
 import { FigmaService } from './services/figma.js';
 import { DesignSystemService } from './services/design-system.js';
 import { CodeGenerator } from './services/code-generator.js';
@@ -121,16 +133,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
 
         const figmaData = await figmaService.getFigmaData(figmaUrl, nodeId);
-        const reactCode = await codeGenerator.generateReactComponent(
+        const files = await codeGenerator.generateAndSaveReactComponent(
           figmaData,
-          componentName
+          componentName,
+          figmaUrl,
+          nodeId
         );
 
         return {
           content: [
             {
               type: 'text',
-              text: `# React Component Generated\n\n\`\`\`tsx\n${reactCode}\n\`\`\``,
+              text: `# React Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n- 컴포넌트: \`${files.componentFile}\`\n- HTML 미리보기: \`${files.htmlFile}\`\n- 메타데이터: \`${files.metadataFile}\`\n\n## 컴포넌트 코드\n\n\`\`\`tsx\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
             },
           ],
         };
@@ -144,16 +158,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
 
         const figmaData = await figmaService.getFigmaData(figmaUrl, nodeId);
-        const vueCode = await codeGenerator.generateVueComponent(
+        const files = await codeGenerator.generateAndSaveVueComponent(
           figmaData,
-          componentName
+          componentName,
+          figmaUrl,
+          nodeId
         );
 
         return {
           content: [
             {
               type: 'text',
-              text: `# Vue Component Generated\n\n\`\`\`vue\n${vueCode}\n\`\`\``,
+              text: `# Vue Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n- 컴포넌트: \`${files.componentFile}\`\n- HTML 미리보기: \`${files.htmlFile}\`\n- 메타데이터: \`${files.metadataFile}\`\n\n## 컴포넌트 코드\n\n\`\`\`vue\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
             },
           ],
         };
