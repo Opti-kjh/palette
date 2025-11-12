@@ -1,5 +1,69 @@
 # Palette 프로젝트 구동 로직 다이어그램
 
+## 📖 프로젝트 개요
+
+**Palette**는 Figma 디자인을 React 또는 Vue 컴포넌트로 자동 변환해주는 MCP(Model Context Protocol) 서버입니다.
+
+### 🎯 핵심 기능
+
+1. **Figma → React/Vue 변환**: Figma 디자인 파일을 분석하여 React 또는 Vue 컴포넌트 코드로 자동 생성
+2. **디자인 시스템 연동**: 기존 디자인 시스템 컴포넌트를 자동으로 매핑하여 사용
+3. **스마트 매핑**: Figma 노드의 이름, 타입, 속성을 분석하여 가장 적합한 디자인 시스템 컴포넌트 선택
+
+### 🔄 작동 원리 (간단 요약)
+
+```
+Figma 디자인 → Figma API로 데이터 가져오기 → 디자인 시스템 컴포넌트 매핑 → React/Vue 코드 생성
+```
+
+**3단계 프로세스:**
+1. **Figma 서비스**: Figma URL에서 디자인 데이터 추출
+2. **디자인 시스템 서비스**: Figma 노드를 디자인 시스템 컴포넌트로 매핑
+3. **코드 생성기**: 매핑된 컴포넌트를 사용하여 실제 코드 생성
+
+### 💡 사용 예시
+
+**입력**: Figma 디자인 URL
+```
+https://www.figma.com/design/xxx?node-id=123-456
+```
+
+**출력**: React 컴포넌트 코드
+```tsx
+import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
+import { Input } from '@dealicious/design-system-react/src/components/ssm-input';
+
+const MyComponent: React.FC = () => {
+  return (
+    <div>
+      <Button>클릭</Button>
+      <Input placeholder="입력하세요" />
+    </div>
+  );
+};
+```
+
+### 🛠️ 주요 구성 요소
+
+- **MCP 서버**: Cursor AI와 통신하는 프로토콜 레이어
+- **Figma 서비스**: Figma API를 통해 디자인 데이터 가져오기
+- **디자인 시스템 서비스**: 30+ 개의 React/Vue 컴포넌트 관리 및 매핑
+- **코드 생성기**: 최종 React/Vue 코드 생성 및 파일 저장
+
+### 📋 지원 기능
+
+- ✅ Figma → React 변환
+- ✅ Figma → Vue 변환
+- ✅ 디자인 시스템 컴포넌트 자동 매핑
+- ✅ Figma 파일 구조 분석
+- ✅ HTML 미리보기 파일 생성
+
+---
+
+## 📊 상세 다이어그램
+
+아래 다이어그램들은 시스템의 각 부분이 어떻게 작동하는지 상세히 보여줍니다.
+
 ## 1. 전체 시스템 아키텍처
 
 ```mermaid
