@@ -1,6 +1,7 @@
 import { FigmaFile, FigmaNode } from './figma.js';
 import { DesignSystemService, DesignSystemComponent } from './design-system.js';
-import { saveFile, saveMetadata, generateRequestId, getRequestFolderPath } from '../utils/request-manager.js';
+import { saveFile, saveBinaryFile, saveMetadata, generateRequestId, getRequestFolderPath } from '../utils/request-manager.js';
+import puppeteer from 'puppeteer';
 
 export interface GeneratedComponent {
   name: string;
@@ -9,11 +10,14 @@ export interface GeneratedComponent {
   dependencies: string[];
 }
 
+export type PreviewType = 'html' | 'image' | 'both';
+
 export interface GeneratedFiles {
   requestId: string;
   folderPath: string;
   componentFile: string;
   htmlFile?: string;
+  imageFile?: string;
   metadataFile: string;
 }
 
@@ -72,13 +76,86 @@ export class CodeGenerator {
   }
 
   /**
+   * HTML을 렌더링하여 이미지로 변환
+   */
+  private async generateImagePreview(
+    htmlContent: string,
+    componentName: string,
+    requestId: string
+  ): Promise<string> {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    try {
+      const page = await browser.newPage();
+      
+      // 뷰포트 설정
+      await page.setViewport({
+        width: 1200,
+        height: 800,
+        deviceScaleFactor: 2
+      });
+      
+      // HTML 콘텐츠 설정
+      await page.setContent(htmlContent, {
+        waitUntil: 'networkidle0'
+      });
+      
+      // 컴포넌트가 렌더링될 때까지 대기
+      await page.waitForSelector('#root', { timeout: 5000 }).catch(() => {
+        // root 요소가 없어도 계속 진행
+      });
+      
+      // 추가 대기 (렌더링 완료를 위해)
+      await page.waitForTimeout(1000);
+      
+      // 페이지 높이 계산
+      const bodyHeight = await page.evaluate(() => {
+        return Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.clientHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+      });
+      
+      // 스크린샷 촬영
+      const screenshot = await page.screenshot({
+        type: 'png',
+        fullPage: true,
+        clip: {
+          x: 0,
+          y: 0,
+          width: 1200,
+          height: Math.min(bodyHeight, 8000) // 최대 8000px
+        }
+      });
+      
+      // 이미지 파일 저장
+      const imageFile = await saveBinaryFile(
+        requestId,
+        `${componentName}.png`,
+        screenshot as Buffer
+      );
+      
+      return imageFile;
+    } finally {
+      await browser.close();
+    }
+  }
+
+  /**
    * React 컴포넌트 생성 및 파일 저장
    */
   async generateAndSaveReactComponent(
     figmaData: FigmaFile,
     componentName: string,
     figmaUrl: string,
-    nodeId?: string
+    nodeId?: string,
+    previewType: PreviewType = 'both'
   ): Promise<GeneratedFiles> {
     const requestId = generateRequestId();
     const folderPath = getRequestFolderPath(requestId);
@@ -89,9 +166,25 @@ export class CodeGenerator {
     // 컴포넌트 파일 저장
     const componentFile = await saveFile(requestId, `${componentName}.tsx`, reactCode);
     
-    // HTML 미리보기 파일 생성 및 저장
+    // HTML 미리보기 파일 생성
     const htmlContent = this.generateHTMLPreview(reactCode, componentName);
-    const htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    
+    let htmlFile: string | undefined;
+    let imageFile: string | undefined;
+    
+    // 사용자 선택에 따라 파일 생성
+    if (previewType === 'html' || previewType === 'both') {
+      htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    }
+    
+    if (previewType === 'image' || previewType === 'both') {
+      try {
+        imageFile = await this.generateImagePreview(htmlContent, componentName, requestId);
+      } catch (error) {
+        console.warn('이미지 생성 실패:', error);
+        // 이미지 생성 실패 시에도 계속 진행
+      }
+    }
     
     // 메타데이터 저장
     const metadataFile = await saveMetadata(requestId, {
@@ -106,6 +199,7 @@ export class CodeGenerator {
       folderPath,
       componentFile,
       htmlFile,
+      imageFile,
       metadataFile,
     };
   }
@@ -158,7 +252,8 @@ export class CodeGenerator {
     figmaData: FigmaFile,
     componentName: string,
     figmaUrl: string,
-    nodeId?: string
+    nodeId?: string,
+    previewType: PreviewType = 'both'
   ): Promise<GeneratedFiles> {
     const requestId = generateRequestId();
     const folderPath = getRequestFolderPath(requestId);
@@ -169,9 +264,25 @@ export class CodeGenerator {
     // 컴포넌트 파일 저장
     const componentFile = await saveFile(requestId, `${componentName}.vue`, vueCode);
     
-    // HTML 미리보기 파일 생성 및 저장
+    // HTML 미리보기 파일 생성
     const htmlContent = this.generateHTMLPreview(vueCode, componentName, 'vue');
-    const htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    
+    let htmlFile: string | undefined;
+    let imageFile: string | undefined;
+    
+    // 사용자 선택에 따라 파일 생성
+    if (previewType === 'html' || previewType === 'both') {
+      htmlFile = await saveFile(requestId, `${componentName}.html`, htmlContent);
+    }
+    
+    if (previewType === 'image' || previewType === 'both') {
+      try {
+        imageFile = await this.generateImagePreview(htmlContent, componentName, requestId);
+      } catch (error) {
+        console.warn('이미지 생성 실패:', error);
+        // 이미지 생성 실패 시에도 계속 진행
+      }
+    }
     
     // 메타데이터 저장
     const metadataFile = await saveMetadata(requestId, {
@@ -186,6 +297,7 @@ export class CodeGenerator {
       folderPath,
       componentFile,
       htmlFile,
+      imageFile,
       metadataFile,
     };
   }

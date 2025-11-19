@@ -22,7 +22,7 @@ import { z } from 'zod';
 import { readFile } from 'fs/promises';
 import { FigmaService } from './services/figma.js';
 import { DesignSystemService } from './services/design-system.js';
-import { CodeGenerator } from './services/code-generator.js';
+import { CodeGenerator, type PreviewType } from './services/code-generator.js';
 
 // MCP 서버 초기화
 const server = new Server(
@@ -57,6 +57,12 @@ const tools: Tool[] = [
           type: 'string',
           description: 'Name for the generated component',
         },
+        previewType: {
+          type: 'string',
+          enum: ['html', 'image', 'both'],
+          description: 'Preview type: "html" for HTML file, "image" for PNG image, "both" for both (default: "both")',
+          default: 'both',
+        },
       },
       required: ['figmaUrl', 'componentName'],
     },
@@ -78,6 +84,12 @@ const tools: Tool[] = [
         componentName: {
           type: 'string',
           description: 'Name for the generated component',
+        },
+        previewType: {
+          type: 'string',
+          enum: ['html', 'image', 'both'],
+          description: 'Preview type: "html" for HTML file, "image" for PNG image, "both" for both (default: "both")',
+          default: 'both',
         },
       },
       required: ['figmaUrl', 'componentName'],
@@ -126,10 +138,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       case 'convert_figma_to_react': {
-        const { figmaUrl, nodeId, componentName } = args as {
+        const { figmaUrl, nodeId, componentName, previewType = 'both' } = args as {
           figmaUrl: string;
           nodeId?: string;
           componentName: string;
+          previewType?: PreviewType;
         };
 
         const figmaData = await figmaService.getFigmaData(figmaUrl, nodeId);
@@ -137,24 +150,50 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           figmaData,
           componentName,
           figmaUrl,
-          nodeId
+          nodeId,
+          previewType
         );
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `# React Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n- 컴포넌트: \`${files.componentFile}\`\n- HTML 미리보기: \`${files.htmlFile}\`\n- 메타데이터: \`${files.metadataFile}\`\n\n## 컴포넌트 코드\n\n\`\`\`tsx\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
-            },
-          ],
-        };
+        // 결과 메시지 구성
+        let fileList = `- 컴포넌트: \`${files.componentFile}\`\n`;
+        if (files.htmlFile) {
+          fileList += `- HTML 미리보기: \`${files.htmlFile}\`\n`;
+        }
+        if (files.imageFile) {
+          fileList += `- 이미지 미리보기: \`${files.imageFile}\`\n`;
+        }
+        fileList += `- 메타데이터: \`${files.metadataFile}\``;
+
+        const content: any[] = [
+          {
+            type: 'text',
+            text: `# React Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n${fileList}\n\n## 컴포넌트 코드\n\n\`\`\`tsx\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
+          },
+        ];
+
+        // 이미지가 있으면 이미지도 포함
+        if (files.imageFile) {
+          try {
+            const imageBuffer = await readFile(files.imageFile);
+            content.push({
+              type: 'image',
+              data: imageBuffer.toString('base64'),
+              mimeType: 'image/png'
+            });
+          } catch (error) {
+            console.warn('이미지 읽기 실패:', error);
+          }
+        }
+
+        return { content };
       }
 
       case 'convert_figma_to_vue': {
-        const { figmaUrl, nodeId, componentName } = args as {
+        const { figmaUrl, nodeId, componentName, previewType = 'both' } = args as {
           figmaUrl: string;
           nodeId?: string;
           componentName: string;
+          previewType?: PreviewType;
         };
 
         const figmaData = await figmaService.getFigmaData(figmaUrl, nodeId);
@@ -162,17 +201,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           figmaData,
           componentName,
           figmaUrl,
-          nodeId
+          nodeId,
+          previewType
         );
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `# Vue Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n- 컴포넌트: \`${files.componentFile}\`\n- HTML 미리보기: \`${files.htmlFile}\`\n- 메타데이터: \`${files.metadataFile}\`\n\n## 컴포넌트 코드\n\n\`\`\`vue\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
-            },
-          ],
-        };
+        // 결과 메시지 구성
+        let fileList = `- 컴포넌트: \`${files.componentFile}\`\n`;
+        if (files.htmlFile) {
+          fileList += `- HTML 미리보기: \`${files.htmlFile}\`\n`;
+        }
+        if (files.imageFile) {
+          fileList += `- 이미지 미리보기: \`${files.imageFile}\`\n`;
+        }
+        fileList += `- 메타데이터: \`${files.metadataFile}\``;
+
+        const content: any[] = [
+          {
+            type: 'text',
+            text: `# Vue Component Generated\n\n**요청 ID:** \`${files.requestId}\`\n**저장 경로:** \`${files.folderPath}\`\n\n## 생성된 파일\n${fileList}\n\n## 컴포넌트 코드\n\n\`\`\`vue\n${await readFile(files.componentFile, 'utf-8')}\n\`\`\``,
+          },
+        ];
+
+        // 이미지가 있으면 이미지도 포함
+        if (files.imageFile) {
+          try {
+            const imageBuffer = await readFile(files.imageFile);
+            content.push({
+              type: 'image',
+              data: imageBuffer.toString('base64'),
+              mimeType: 'image/png'
+            });
+          } catch (error) {
+            console.warn('이미지 읽기 실패:', error);
+          }
+        }
+
+        return { content };
       }
 
       case 'list_design_system_components': {

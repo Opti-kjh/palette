@@ -52,6 +52,20 @@ export async function saveFile(
 }
 
 /**
+ * 바이너리 파일 저장 (이미지 등)
+ */
+export async function saveBinaryFile(
+  requestId: string,
+  filename: string,
+  content: Buffer
+): Promise<string> {
+  const folderPath = await createRequestFolder(requestId);
+  const filePath = join(folderPath, filename);
+  await writeFile(filePath, content);
+  return filePath;
+}
+
+/**
  * 요청 메타데이터 저장
  */
 export interface RequestMetadata {

@@ -16,6 +16,8 @@
     "dev": "tsx src/index.ts",
     "test": "jest",
     "test:services": "tsx src/test.ts",
+    "test:figma-tools": "tsx src/test-figma-tools.ts",
+    "test:mcp-servers": "tsx src/test-mcp-servers.ts",
     "mcp": "node dist/index.js",
     "mcp:dev": "tsx src/index.ts",
     "postinstall": "yarn build",
@@ -55,6 +57,7 @@
     "@modelcontextprotocol/sdk": "^0.4.0",
     "axios": "^1.6.0",
     "dotenv": "^17.2.3",
+    "puppeteer": "^21.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "zod": "^3.22.0"
