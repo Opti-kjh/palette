@@ -1,8 +1,23 @@
 # Smithery.ai MCP Server Configuration
-# https://smithery.ai/docs/build/config
+runtime: "typescript"
 
-# TypeScript 런타임으로 Smithery 호스팅
-runtime: typescript
-
-# Smithery가 로드할 TypeScript 모듈
-target: src/smithery.ts
+# Configuration schema for user settings
+configSchema:
+  type: "object"
+  required:
+    - "FIGMA_ACCESS_TOKEN"
+    - "GITHUB_TOKEN"
+  properties:
+    FIGMA_ACCESS_TOKEN:
+      type: "string"
+      title: "Figma Access Token"
+      description: "Figma Personal Access Token (https://www.figma.com/developers/api#access-tokens)"
+    GITHUB_TOKEN:
+      type: "string"
+      title: "GitHub Token"
+      description: "GitHub Personal Access Token for design system packages"
+    FIGMA_MCP_SERVER_URL:
+      type: "string"
+      title: "Figma MCP Server URL"
+      description: "Figma Dev Mode MCP server URL"
+      default: "http://127.0.0.1:3845/mcp"
