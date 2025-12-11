@@ -55,10 +55,12 @@ export default function createMcpServer({ config }: { config?: SmitheryConfig } 
   }
 
   // 공통 서버 생성 로직 사용
+  // Remote 모드에서는 Figma Desktop MCP 클라이언트를 사용하지 않음 (로컬호스트 접근 불가)
   const server = createPaletteServer({
     figmaAccessToken: safeConfig.FIGMA_ACCESS_TOKEN,
     githubToken: safeConfig.GITHUB_TOKEN,
     figmaMcpServerUrl: safeConfig.FIGMA_MCP_SERVER_URL,
+    useFigmaMcp: false, // Remote 모드에서는 Figma REST API만 사용
   });
 
   console.error('Palette MCP server created for Smithery (Remote mode)');

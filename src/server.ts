@@ -20,6 +20,11 @@ export interface ServerConfig {
   figmaAccessToken?: string;
   githubToken?: string;
   figmaMcpServerUrl?: string;
+  /** 
+   * Figma Desktop MCP 클라이언트 사용 여부
+   * Remote 모드(Smithery)에서는 false로 설정해야 함 (로컬호스트 접근 불가)
+   */
+  useFigmaMcp?: boolean;
 }
 
 // Tools 정의
@@ -134,7 +139,9 @@ export function createPaletteServer(config: ServerConfig = {}): Server {
   });
 
   // 서비스 초기화
-  const figmaService = new FigmaService();
+  // Remote 모드에서는 Figma Desktop MCP 클라이언트를 사용하지 않음 (로컬호스트 접근 불가)
+  const useFigmaMcp = config.useFigmaMcp !== undefined ? config.useFigmaMcp : true;
+  const figmaService = new FigmaService(useFigmaMcp, config.figmaMcpServerUrl);
   const designSystemService = new DesignSystemService();
   const codeGenerator = new CodeGenerator(designSystemService);
 
