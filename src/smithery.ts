@@ -9,39 +9,51 @@ import { createStatelessServer } from '@smithery/sdk/server/stateless.js';
 import { z } from 'zod';
 import { createPaletteServer } from './server.js';
 
-// Smithery 설정 스키마 정의
+/**
+ * Smithery 설정 스키마 정의
+ * 
+ * Palette MCP Server Configuration
+ * Figma 디자인을 Design System 컴포넌트로 변환하기 위한 설정
+ */
 export const configSchema = z.object({
+  // Figma Access Token - 필수 설정 (Figma API 호출에 필요)
   FIGMA_ACCESS_TOKEN: z
     .string()
-    .optional()
-    .describe('Figma Personal Access Token (https://www.figma.com/developers/api#access-tokens)'),
+    .min(1, 'Figma Access Token is required')
+    .describe('Figma Personal Access Token. Required for accessing Figma designs. Get yours at https://www.figma.com/developers/api#access-tokens'),
+  
+  // GitHub Token - 선택 설정 (비공개 디자인 시스템 패키지 접근용)
   GITHUB_TOKEN: z
     .string()
+    .min(1)
     .optional()
-    .describe('GitHub Personal Access Token for design system packages'),
+    .describe('GitHub Personal Access Token for accessing private design system packages. Required only for private repositories.'),
+  
+  // Figma MCP Server URL - 로컬 개발용 (Remote 모드에서는 사용 안함)
   FIGMA_MCP_SERVER_URL: z
     .string()
+    .url('Must be a valid URL')
     .optional()
     .default('http://127.0.0.1:3845/mcp')
-    .describe('Figma Dev Mode MCP server URL'),
-});
+    .describe('Figma Dev Mode MCP server URL. Only needed for local development with Figma Desktop app.'),
+}).describe('Configuration options for Palette MCP Server - Figma to Design System converter');
 
 // Smithery 설정 타입
 type SmitheryConfig = z.infer<typeof configSchema>;
 
-// 기본 설정
-const defaultConfig: SmitheryConfig = {
-  FIGMA_ACCESS_TOKEN: undefined,
-  GITHUB_TOKEN: undefined,
+// 기본 설정 (부분 설정 허용)
+type PartialSmitheryConfig = Partial<SmitheryConfig>;
+
+const defaultConfig: PartialSmitheryConfig = {
   FIGMA_MCP_SERVER_URL: 'http://127.0.0.1:3845/mcp',
 };
 
 /**
  * MCP 서버 생성 함수 - Smithery가 호출
  */
-export default function createMcpServer({ config }: { config?: SmitheryConfig } = {}) {
+export default function createMcpServer({ config }: { config?: PartialSmitheryConfig } = {}) {
   // config가 없거나 불완전해도 서버 초기화 가능하도록 방어적 처리
-  const safeConfig: SmitheryConfig = { ...defaultConfig, ...config };
+  const safeConfig: PartialSmitheryConfig = { ...defaultConfig, ...config };
   
   // 환경변수 설정 (값이 있는 경우에만)
   if (safeConfig.FIGMA_ACCESS_TOKEN) {
