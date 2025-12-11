@@ -100,8 +100,8 @@ https://www.figma.com/design/akI7EwlWemAf8KJup9F2ZS/...?node-id=45733-32370
 ### 설치
 
 ```bash
-git clone https://github.com/Opti-kjh/palatte.git
-cd palatte
+git clone https://github.com/Opti-kjh/palette.git
+cd palette
 yarn install
 ```
 
@@ -162,7 +162,7 @@ src/
 
 ## 🤝 기여
 
-이슈 및 PR은 [GitHub](https://github.com/Opti-kjh/palatte)에서 환영합니다.
+이슈 및 PR은 [GitHub](https://github.com/Opti-kjh/palette)에서 환영합니다.
 
 ## 📄 라이선스
 

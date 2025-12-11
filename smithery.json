@@ -6,9 +6,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Opti-kjh/palatte.git"
+    "url": "https://github.com/Opti-kjh/palette.git"
   },
-  "homepage": "https://github.com/Opti-kjh/palatte#readme",
+  "homepage": "https://github.com/Opti-kjh/palette#readme",
   "keywords": [
     "mcp",
     "model-context-protocol",

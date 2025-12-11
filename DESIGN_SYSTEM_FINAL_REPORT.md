@@ -93,7 +93,7 @@ yarn build --filter=@dealicious/design-system-react
 # 로컬 패키지로 링크
 cd packages/design-system-react
 yarn link
-cd ../../palatte
+cd ../../palette
 yarn link @dealicious/design-system-react
 ```
 

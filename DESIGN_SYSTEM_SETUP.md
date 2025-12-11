@@ -35,7 +35,7 @@ yarn install
 Palette 프로젝트의 node_modules에 symlink를 생성합니다:
 
 ```bash
-cd /Users/eos/workspaces/palatte
+cd /Users/eos/workspaces/palette
 
 # 기존 디렉토리 제거 (있는 경우)
 rm -rf node_modules/@dealicious/design-system-react
@@ -81,7 +81,7 @@ ssm-web 패키지의 `package.json`에 exports 필드를 추가해야 합니다:
 검증 스크립트를 실행하여 설치가 올바른지 확인합니다:
 
 ```bash
-cd /Users/eos/workspaces/palatte
+cd /Users/eos/workspaces/palette
 node verify-design-system.js
 ```
 
@@ -91,7 +91,7 @@ node verify-design-system.js
 
 ```
 /Users/eos/workspaces/
-├── palatte/                          # 현재 프로젝트
+├── palette/                          # 현재 프로젝트
 │   ├── node_modules/
 │   │   └── @dealicious/
 │   │       ├── design-system-react -> /Users/eos/workspaces/ssm-web/packages/design-system-react
