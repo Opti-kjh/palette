@@ -1,6 +1,6 @@
 {
   "name": "palette-mcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for converting Figma designs to React/Vue components using design system",
   "main": "dist/index.js",
   "module": "src/smithery.ts",
@@ -10,8 +10,19 @@
     "palette-mcp": "./dist/index.js"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/server.js",
+    "dist/server.d.ts",
+    "dist/smithery.js",
+    "dist/smithery.d.ts",
+    "dist/services/**/*",
+    "dist/utils/**/*",
+    "src/index.ts",
+    "src/server.ts",
+    "src/smithery.ts",
+    "src/services/**/*",
+    "src/utils/**/*",
     "README.md",
     "LICENSE",
     "smithery.yaml"
