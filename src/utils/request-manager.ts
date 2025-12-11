@@ -4,8 +4,16 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// ESM과 CJS 모두 호환되는 __dirname 구현
+let __dirname_resolved: string;
+try {
+  // ESM 환경
+  const __filename = fileURLToPath(import.meta.url);
+  __dirname_resolved = dirname(__filename);
+} catch {
+  // CJS 환경 또는 번들러 환경 - process.cwd() 사용
+  __dirname_resolved = process.cwd();
+}
 
 /**
  * 요청 ID 생성 (타임스탬프 + 랜덤 문자열)
@@ -20,7 +28,7 @@ export function generateRequestId(): string {
  * 요청별 폴더 경로 생성
  */
 export function getRequestFolderPath(requestId: string): string {
-  const projectRoot = join(__dirname, '..', '..');
+  const projectRoot = join(__dirname_resolved, '..', '..');
   return join(projectRoot, 'dist', 'requests', requestId);
 }
 

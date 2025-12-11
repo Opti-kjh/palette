@@ -4,10 +4,22 @@ import { saveFile, saveBinaryFile, saveMetadata, generateRequestId, getRequestFo
 
 // puppeteer는 optional dependency로, 없으면 이미지 프리뷰 기능이 비활성화됨
 let puppeteer: any = null;
-try {
-  puppeteer = (await import('puppeteer')).default;
-} catch (e) {
-  console.warn('puppeteer를 로드할 수 없습니다. 이미지 프리뷰 기능이 비활성화됩니다.');
+let puppeteerLoaded = false;
+
+/**
+ * puppeteer를 lazy loading으로 로드
+ */
+async function loadPuppeteer(): Promise<any> {
+  if (puppeteerLoaded) return puppeteer;
+  
+  try {
+    puppeteer = (await import('puppeteer')).default;
+  } catch (e) {
+    console.warn('puppeteer를 로드할 수 없습니다. 이미지 프리뷰 기능이 비활성화됩니다.');
+    puppeteer = null;
+  }
+  puppeteerLoaded = true;
+  return puppeteer;
 }
 
 export interface GeneratedComponent {
@@ -91,13 +103,16 @@ export class CodeGenerator {
     componentName: string,
     requestId: string
   ): Promise<string> {
+    // puppeteer를 lazy loading으로 로드
+    const pptr = await loadPuppeteer();
+    
     // puppeteer가 없으면 이미지 생성 불가
-    if (!puppeteer) {
+    if (!pptr) {
       console.warn('puppeteer가 설치되지 않아 이미지 프리뷰를 생성할 수 없습니다.');
       return '';
     }
 
-    const browser = await puppeteer.launch({
+    const browser = await pptr.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });

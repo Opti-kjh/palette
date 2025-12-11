@@ -2,11 +2,12 @@
  * Palette MCP Server - Smithery Remote 배포용
  * 
  * Smithery.ai에서 호스팅될 때 사용됩니다.
- * Smithery가 이 파일을 로드하고 createServer 함수를 호출합니다.
+ * @smithery/sdk를 사용하여 HTTP 서버로 실행됩니다.
  */
 
+import { createStatelessServer } from '@smithery/sdk/server/stateless.js';
 import { z } from 'zod';
-import { createPaletteServer, tools } from './server.js';
+import { createPaletteServer } from './server.js';
 
 // Smithery 설정 스키마 정의
 export const configSchema = z.object({
@@ -26,12 +27,9 @@ export const configSchema = z.object({
 type SmitheryConfig = z.infer<typeof configSchema>;
 
 /**
- * Smithery에서 호출하는 서버 생성 함수
- * 
- * @param config - Smithery에서 전달받은 사용자 설정
- * @returns MCP 서버 인스턴스
+ * MCP 서버 생성 함수 - Smithery가 호출
  */
-export default function createServer({ config }: { config: SmitheryConfig }) {
+function createMcpServer({ config }: { config: SmitheryConfig }) {
   // 환경변수 설정
   process.env.FIGMA_ACCESS_TOKEN = config.FIGMA_ACCESS_TOKEN;
   process.env.GITHUB_TOKEN = config.GITHUB_TOKEN;
@@ -44,11 +42,17 @@ export default function createServer({ config }: { config: SmitheryConfig }) {
     figmaMcpServerUrl: config.FIGMA_MCP_SERVER_URL,
   });
 
-  console.error('Palette server created for Smithery (Remote mode)');
+  console.error('Palette MCP server created for Smithery (Remote mode)');
 
-  // Smithery가 기대하는 형식으로 반환
   return server;
 }
 
-// Tools 정보도 export (Smithery가 capabilities 탐지에 사용할 수 있음)
-export { tools };
+// Smithery stateless 서버 생성 및 시작
+const { app } = createStatelessServer(createMcpServer);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.error(`Palette MCP server listening on port ${port}`);
+});
+
+// Export for Smithery
+export default createMcpServer;
