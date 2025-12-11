@@ -8,7 +8,7 @@ description: |
   Supports @dealicious/design-system-react and @dealicious/design-system components.
 
 # Runtime specification (required)
-runtime: node
+runtime: typescript
 
 # Start command configuration (required)
 startCommand:
@@ -46,16 +46,3 @@ startCommand:
         FIGMA_MCP_SERVER_URL: config.FIGMA_MCP_SERVER_URL || "http://127.0.0.1:3845/mcp"
       }
     })
-
-# Environment variables as object (for documentation)
-env:
-  FIGMA_ACCESS_TOKEN:
-    description: Figma 개인 액세스 토큰 (필수)
-    required: true
-  GITHUB_TOKEN:
-    description: 디자인 시스템 패키지 접근용 GitHub 토큰 (필수)
-    required: true
-  FIGMA_MCP_SERVER_URL:
-    description: Figma MCP 서버 URL (필수)
-    required: true
-    default: "http://127.0.0.1:3845/mcp"
