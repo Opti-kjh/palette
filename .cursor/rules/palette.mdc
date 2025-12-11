@@ -4,11 +4,48 @@ alwaysApply: true
 
 # Palette 프로젝트 규칙
 
-## 핵심 원칙: 항상 디자인 시스템 사용
+## 핵심 원칙
 
+### 1. 항상 디자인 시스템 사용
 이 프로젝트는 **명시된 디자인 시스템을 사용하는 것을 변하지 않는 원칙**으로 세웠습니다.
 
-### Figma → React/Vue 변환 시 필수 규칙
+### 2. Figma는 반드시 MCP를 통해서만 접근
+- ❌ **Figma API 직접 호출 금지**
+- ❌ **Figma 플러그인 직접 사용 금지**
+- ✅ **반드시 Figma MCP 도구를 통해서만 접근**
+
+## Figma → React/Vue 변환 필수 플로우
+
+### 단계별 처리 과정 (반드시 순서대로)
+
+1. **Figma MCP를 통한 디자인 데이터 가져오기**
+   ```
+   ✅ list_mcp_resources를 사용하여 사용 가능한 Figma 리소스 확인
+   ✅ fetch_mcp_resource를 사용하여 특정 Figma 노드/프레임 데이터 가져오기
+   ```
+
+2. **가져온 데이터 분석**
+   - Figma MCP에서 제공하는 레이아웃, 텍스트, 색상, 크기 정보를 분석
+   - 컴포넌트 구조와 계층 구조 파악
+   - Figma에서 생성된 Tailwind/HTML 코드는 **절대 사용하지 않음** (참고만)
+
+3. **디자인 시스템 컴포넌트로 변환**
+   - 분석한 디자인을 디자인 시스템 컴포넌트로 매핑
+   - 모든 UI 요소는 반드시 `@dealicious/design-system-react` 또는 `@dealicious/design-system` 사용
+
+### Figma 접근 규칙
+
+**❌ 절대 하지 말아야 할 것:**
+- Figma API를 직접 호출하는 코드 작성
+- Figma 플러그인을 직접 실행
+- Figma 웹사이트에 직접 접근하여 수동으로 코드 추출
+
+**✅ 반드시 해야 할 것:**
+- `list_mcp_resources` 도구로 Figma 리소스 목록 확인
+- `fetch_mcp_resource` 도구로 Figma 디자인 데이터 가져오기
+- MCP를 통해 받은 데이터만 사용하여 컴포넌트 생성
+
+### 스타일링 규칙
 
 1. **절대 Tailwind CSS나 일반 HTML/CSS를 사용하지 마세요**
    - ❌ `<div className="bg-white p-4">` 같은 Tailwind 클래스 사용 금지
@@ -16,106 +53,97 @@ alwaysApply: true
    - ✅ 반드시 `@dealicious/design-system-react` 또는 `@dealicious/design-system` 컴포넌트 사용
 
 2. **디자인 시스템 컴포넌트 Import 필수**
-   
+   ```typescript
    // ✅ 올바른 방식
    import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
    import { Text } from '@dealicious/design-system-react/src/components/ssm-text';
    import { Tag } from '@dealicious/design-system-react/src/components/ssm-tag';
    import { Check } from '@dealicious/design-system-react/src/components/ssm-check';
    import { Chip } from '@dealicious/design-system-react/src/components/ssm-chip';
-   3. **사용 가능한 디자인 시스템 컴포넌트**
+   ```
+
+3. **사용 가능한 디자인 시스템 컴포넌트**
    - Button, Check, Chip, Tag, Text, Input, Dropdown, Icon
    - LayerPopup, LayerAlert, Accordion, Tab
    - Badge, LabeledText, TextLink, TextField
    - Radio, Switch, Pagination, ArrowPagination
    - Toast, Notice, Error, HelperText, LoadingSpinner, Tooltip
 
-4. **Figma MCP 도구 사용 시**
-   - `get_design_context`로 코드를 받아도 **반드시 디자인 시스템 컴포넌트로 변환**해야 합니다
-   - Figma가 생성한 Tailwind 코드는 **참고용**일 뿐이며, 실제로는 디자인 시스템으로 재작성해야 합니다
+### 코드 생성 시 체크리스트
 
-5. **코드 생성 시 체크리스트**
-   - [ ] Tailwind CSS 클래스가 없는가?
-   - [ ] 모든 UI 요소가 디자인 시스템 컴포넌트인가?
-   - [ ] import 문에 디자인 시스템 경로가 포함되어 있는가?
-   - [ ] 인라인 스타일은 최소한으로만 사용하는가?
+- [ ] Figma MCP 도구를 사용하여 디자인 데이터를 가져왔는가?
+- [ ] Figma API를 직접 호출하지 않았는가?
+- [ ] Tailwind CSS 클래스가 없는가?
+- [ ] 모든 UI 요소가 디자인 시스템 컴포넌트인가?
+- [ ] import 문에 디자인 시스템 경로가 포함되어 있는가?
+- [ ] 인라인 스타일은 최소한으로만 사용하는가?
 
 ### 예시: 올바른 변환
 
-**Figma에서 받은 코드 (Tailwind):**
-<div className="bg-white p-4 rounded-lg">
-  <button className="bg-blue-500 text-white px-4 py-2 rounded">
-    클릭
-  </button>
-</div>**변환된 코드 (디자인 시스템):**
+**Figma MCP에서 받은 데이터:**
+```json
+{
+  "type": "FRAME",
+  "name": "Button Container",
+  "children": [{
+    "type": "TEXT",
+    "characters": "클릭",
+    "fills": [{ "color": { "r": 1, "g": 1, "b": 1 } }]
+  }],
+  "fills": [{ "color": { "r": 0.2, "g": 0.4, "b": 1 } }],
+  "cornerRadius": 8
+}
+```
+
+**변환된 코드 (디자인 시스템):**
+```typescript
 import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
 import { Text } from '@dealicious/design-system-react/src/components/ssm-text';
 
 <div style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px' }}>
   <Button variant="primary">클릭</Button>
-</div>### 프로젝트 구조
+</div>
+```
+
+## 사용자 요청 처리 가이드
+
+### "Figma를 React로 변환해줘" 요청 시:
+
+1. **먼저 Figma MCP로 리소스 확인**
+   - `list_mcp_resources` 도구를 사용하여 사용 가능한 Figma 파일/노드 확인
+   - 사용자에게 어떤 리소스를 변환할지 확인
+
+2. **Figma 데이터 가져오기**
+   - `fetch_mcp_resource` 도구로 특정 Figma 노드 데이터 가져오기
+   - 받은 데이터가 Tailwind나 일반 HTML이어도 **무시**
+
+3. **디자인 시스템으로 재작성**
+   - 디자인 시스템 컴포넌트를 사용하여 **처음부터 다시 작성**
+   - Figma의 구조와 내용만 참고하고, 스타일링은 100% 디자인 시스템으로
+
+4. **검증**
+   - 위의 체크리스트로 최종 검증
+   - Tailwind나 일반 HTML/CSS가 없는지 확인
+
+## 프로젝트 구조
+
 - 디자인 시스템 패키지: `@dealicious/design-system-react` (React), `@dealicious/design-system` (Vue)
 - GitHub 저장소: https://github.com/dealicious-inc/ssm-web
 - 설치 방법: `yarn add git+ssh://git@github.com/dealicious-inc/ssm-web.git#master`
+
+## MCP 도구 사용법
+
+### Figma 리소스 목록 확인
+```typescript
+list_mcp_resources({ server: "figma" })
 ```
 
-## 2. 사용자 규칙 업데이트
-
-`.cursorrules`에 다음을 추가하세요:
-
-```markdown
-## Figma 변환 요청 처리
-
-사용자가 "Figma를 React로 변환해줘"라고 요청하면:
-1. Figma MCP 도구로 디자인 컨텍스트를 가져옵니다
-2. 받은 코드가 Tailwind나 일반 HTML이어도 **무시**합니다
-3. 디자인 시스템 컴포넌트를 사용하여 **처음부터 다시 작성**합니다
-4. Figma의 구조와 내용만 참고하고, 스타일링은 100% 디자인 시스템으로 합니다
+### Figma 특정 노드 데이터 가져오기
+```typescript
+fetch_mcp_resource({ 
+  server: "figma", 
+  uri: "figma://file/{fileKey}/node/{nodeId}" 
+})
 ```
 
-## 3. README.md에 명시
-
-`README.md`에 다음 섹션을 추가하세요:
-
-```markdown
-## ⚠️ 중요: 디자인 시스템 사용 원칙
-
-이 프로젝트는 **항상 디자인 시스템 컴포넌트를 사용**합니다.
-
-- ❌ Tailwind CSS 사용 금지
-- ❌ 일반 HTML/CSS 사용 금지  
-- ✅ 디자인 시스템 컴포넌트만 사용
-
-자세한 내용은 `.cursorrules` 파일을 참고하세요.
-```
-
-## 4. 프로젝트 루트에 `DESIGN_SYSTEM_REQUIREMENT.md` 생성 (선택사항)
-
-```markdown
-# 디자인 시스템 사용 필수 안내
-
-이 프로젝트의 모든 컴포넌트는 반드시 디자인 시스템을 사용해야 합니다.
-
-## 빠른 참조
-
-- React: `@dealicious/design-system-react/src/components/ssm-*`
-- Vue: `@dealicious/design-system/src/components/ssm-*`
-
-## 자주 사용하는 컴포넌트
-
-- Button: `ssm-button`
-- Text: `ssm-text`
-- Tag: `ssm-tag`
-- Check: `ssm-check`
-- Chip: `ssm-chip`
-- Input: `ssm-input`
-```
-
-이렇게 설정하면 Cursor AI가 Figma 변환 요청 시 항상 디자인 시스템을 사용합니다.
-
-**요약:**
-1. `.cursorrules` 파일 생성 (가장 중요)
-2. 사용자 규칙에 명시
-3. README.md 업데이트
-
-이렇게 하면 Figma 변환 요청 시 자동으로 디자인 시스템을 사용합니다.
+이렇게 설정하면 Figma 변환 요청 시 항상 MCP를 통해 디자인 시스템을 사용합니다.
