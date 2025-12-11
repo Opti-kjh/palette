@@ -1,11 +1,15 @@
-# Smithery.ai MCP Server Configuration for TypeScript Runtime
-# https://smithery.ai/docs/build/config
+# Smithery.ai MCP Server Configuration
+# npm 패키지 직접 사용 방식
 
-runtime: typescript
-target: src/index.ts
+runtime: container
 
-# Environment variables (users will configure these during installation)
-env:
-  FIGMA_ACCESS_TOKEN: ""
-  GITHUB_TOKEN: ""
-  FIGMA_MCP_SERVER_URL: "http://127.0.0.1:3845/mcp"
+startCommand:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "palette-mcp"
+  env:
+    FIGMA_ACCESS_TOKEN: ""
+    GITHUB_TOKEN: ""
+    FIGMA_MCP_SERVER_URL: "http://127.0.0.1:3845/mcp"
