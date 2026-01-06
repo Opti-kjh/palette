@@ -1,6 +1,6 @@
 /**
  * Palette MCP Server - 공통 로직
- * 
+ *
  * Local(stdio) 모드와 Remote(Smithery) 모드에서 공유되는 핵심 기능을 정의합니다.
  */
 
@@ -18,6 +18,7 @@ import { readFile } from 'fs/promises';
 import { FigmaService } from './services/figma.js';
 import { DesignSystemService, type SyncConfig } from './services/design-system.js';
 import { CodeGenerator, type PreviewType } from './services/code-generator.js';
+import { validateAccess, type AuthResult } from './services/auth.js';
 
 // 서버 설정 타입
 export interface ServerConfig {
@@ -33,6 +34,11 @@ export interface ServerConfig {
    * 디자인 시스템 컴포넌트 동기화 설정
    */
   syncConfig?: SyncConfig;
+  /**
+   * 인증 건너뛰기 (로컬 개발용)
+   * true로 설정하면 GitHub 조직 멤버십 확인을 건너뜁니다.
+   */
+  skipAuth?: boolean;
 }
 
 // Tools 정의 (annotations 포함)
@@ -242,6 +248,34 @@ export function createPaletteServer(config: ServerConfig = {}): Server {
   const designSystemService = new DesignSystemService(config.syncConfig);
   const codeGenerator = new CodeGenerator(designSystemService);
 
+  // 인증 상태 캐시
+  let authResult: AuthResult | null = null;
+
+  /**
+   * 도구 실행 전 인증 확인
+   * skipAuth가 true이면 인증을 건너뜁니다.
+   */
+  async function ensureAuthenticated(): Promise<void> {
+    // 로컬 개발 모드에서는 인증 건너뛰기
+    if (config.skipAuth) {
+      console.error('[Palette Auth] ⚠️ 인증 건너뛰기 모드 (skipAuth=true)');
+      return;
+    }
+
+    // 이미 인증되었으면 건너뛰기
+    if (authResult?.authorized) {
+      return;
+    }
+
+    // 인증 수행
+    const githubToken = config.githubToken || process.env.GITHUB_TOKEN;
+    authResult = await validateAccess(githubToken);
+
+    if (!authResult.authorized) {
+      throw new Error(authResult.error || '인증에 실패했습니다.');
+    }
+  }
+
   // 디자인 시스템 컴포넌트 비동기 초기화 (백그라운드에서 실행)
   designSystemService.initialize().catch((error) => {
     console.error('[Palette] 디자인 시스템 초기화 실패:', error);
@@ -256,6 +290,9 @@ export function createPaletteServer(config: ServerConfig = {}): Server {
     const { name, arguments: args } = request.params;
 
     try {
+      // 🔐 도구 실행 전 인증 확인
+      await ensureAuthenticated();
+
       switch (name) {
         case 'convert_figma_to_react': {
           const { figmaUrl, nodeId, componentName, previewType = 'both' } = args as {

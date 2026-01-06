@@ -8,7 +8,7 @@ import { dirname } from 'path';
 let __dirname_resolved: string;
 try {
   // ESM 환경
-  const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
   __dirname_resolved = dirname(__filename);
 } catch {
   // CJS 환경 또는 번들러 환경 - process.cwd() 사용
@@ -37,11 +37,11 @@ export function getRequestFolderPath(requestId: string): string {
  */
 export async function createRequestFolder(requestId: string): Promise<string> {
   const folderPath = getRequestFolderPath(requestId);
-  
+
   if (!existsSync(folderPath)) {
     await mkdir(folderPath, { recursive: true });
   }
-  
+
   return folderPath;
 }
 
@@ -95,15 +95,14 @@ export async function saveMetadata(
 ): Promise<string> {
   const folderPath = await createRequestFolder(requestId);
   const metadataPath = join(folderPath, 'metadata.json');
-  
+
   const fullMetadata: RequestMetadata = {
     requestId,
     createdAt: new Date().toISOString(),
     files: [],
     ...metadata,
   };
-  
+
   await writeFile(metadataPath, JSON.stringify(fullMetadata, null, 2), 'utf-8');
   return metadataPath;
 }
-
