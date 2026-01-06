@@ -14,7 +14,7 @@ Figma 디자인을 기존 Design System 컴포넌트를 활용하여 React/Vue �
 2. "Install" 클릭
 3. 환경 변수 입력:
    - `FIGMA_ACCESS_TOKEN`: Figma API 토큰 (필수)
-   - `GITHUB_TOKEN`: GitHub 토큰 (선택, 디자인 시스템 접근용)
+   - `GITHUB_TOKEN`: GitHub 토큰 (필수, 조직 인증 및 디자인 시스템 접근용)
 
 ### Cursor에서 수동 설치
 
@@ -26,9 +26,10 @@ Figma 디자인을 기존 Design System 컴포넌트를 활용하여 React/Vue �
     "palette": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@anthropic/palette-mcp"],
+      "args": ["-y", "palette-mcp"],
       "env": {
-        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_TOKEN_HERE"
+        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_TOKEN_HERE",
+        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
       }
     }
   }
@@ -40,8 +41,10 @@ Figma 디자인을 기존 Design System 컴포넌트를 활용하여 React/Vue �
 | 변수명 | 필수 | 설명 |
 |--------|------|------|
 | `FIGMA_ACCESS_TOKEN` | ✅ | Figma Personal Access Token |
-| `GITHUB_TOKEN` | ❌ | GitHub 토큰 (디자인 시스템 패키지 접근용) |
+| `GITHUB_TOKEN` | ✅ | GitHub 토큰 (dealicious-inc 조직 인증 및 디자인 시스템 접근용) |
 | `FIGMA_MCP_SERVER_URL` | ❌ | Figma MCP 서버 URL (기본값: http://127.0.0.1:3845/mcp) |
+
+> ⚠️ **참고**: `GITHUB_TOKEN`은 dealicious-inc 조직 멤버십 확인에 사용됩니다. 조직 멤버만 Palette MCP를 사용할 수 있습니다.
 
 #### Figma Access Token 발급:
 1. [Figma](https://www.figma.com) → Settings → Account
@@ -56,7 +59,7 @@ Figma 디자인을 기존 Design System 컴포넌트를 활용하여 React/Vue �
 Figma에서 디자인을 선택하고 "Copy link to selection"으로 URL을 복사한 후:
 
 ```
-https://www.figma.com/design/akI7EwlWemAf8KJup9F2ZS/...?node-id=45733-32370 
+https://www.figma.com/design/akI7EwlWemAf8KJup9F2ZS/...?node-id=45733-32370
 를 React 코드로 작성해줘
 ```
 
