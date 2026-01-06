@@ -25,6 +25,57 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'palette-mcp' });
 });
 
+// MCP Server Card - 서버 메타데이터
+app.get('/.well-known/mcp-card', (req, res) => {
+  res.json({
+    name: 'palette',
+    version: '1.3.1',
+    description: 'Figma 디자인을 디자인 시스템 컴포넌트로 변환하는 MCP 서버',
+    capabilities: {
+      tools: {
+        listChanged: false,
+      },
+      prompts: {
+        listChanged: false,
+      },
+      resources: {
+        subscribe: false,
+        listChanged: false,
+      },
+    },
+    author: {
+      name: 'KJH',
+      email: 'kjh@deali.net',
+    },
+  });
+});
+
+// MCP Config Schema - 설정 스키마
+app.get('/.well-known/mcp-config', (req, res) => {
+  res.json({
+    title: 'MCP Session Configuration',
+    description: 'Schema for the /mcp endpoint configuration',
+    'x-query-style': 'dot+bracket',
+    type: 'object',
+    required: ['FIGMA_ACCESS_TOKEN', 'GITHUB_TOKEN'],
+    properties: {
+      FIGMA_ACCESS_TOKEN: {
+        type: 'string',
+        description: 'Figma Personal Access Token (필수). Figma 디자인에 접근하기 위해 필요합니다.',
+      },
+      GITHUB_TOKEN: {
+        type: 'string',
+        description: 'GitHub Personal Access Token (필수). dealicious-inc 조직 멤버십 확인 및 디자인 시스템 패키지 접근에 필요합니다.',
+      },
+      FIGMA_MCP_SERVER_URL: {
+        type: 'string',
+        default: 'http://127.0.0.1:3845/mcp',
+        description: 'Figma Dev Mode MCP server URL (선택).',
+      },
+    },
+  });
+});
+
 // MCP endpoint - stdio를 HTTP로 프록시
 app.post('/mcp', async (req, res) => {
   try {
