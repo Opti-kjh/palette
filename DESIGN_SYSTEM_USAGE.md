@@ -130,21 +130,18 @@ function MyComponent() {
 }
 ```
 
-**실제 사용 가능한 대안:**
+**❌ 외부 UI 라이브러리 사용 금지:**
 ```tsx
-// Material-UI 사용 예시
-import { Button, TextField, Chip } from '@mui/material';
+// ❌ 절대 사용 금지 - MUI, Ant Design, Chakra UI 등 외부 라이브러리
+// import { Button, TextField, Chip } from '@mui/material';  ← 금지!
+// import { Button } from 'antd';  ← 금지!
+// import { Button } from '@chakra-ui/react';  ← 금지!
 
-function MyComponent() {
-  return (
-    <div>
-      <TextField placeholder="입력하세요" />
-      <Button variant="contained">저장</Button>
-      <Chip label="완료" color="success" />
-    </div>
-  );
-}
+// ✅ 반드시 @dealicious/design-system만 사용
+import { Button } from '@dealicious/design-system-react/src/components/ssm-button';
 ```
+
+> ⚠️ **중요**: 이 프로젝트는 오직 `@dealicious/design-system-react`와 `@dealicious/design-system`만 사용합니다. MUI, Ant Design, Chakra UI 등 외부 UI 라이브러리는 **어떤 상황에서도 사용하면 안 됩니다**.
 
 ## 생성된 컴포넌트 예제
 
@@ -165,19 +162,19 @@ const ExchangeRateCard = () => {
         <Input placeholder="검색어 입력" />
         <Button variant="primary">검색</Button>
       </div>
-      
+
       <div className="stats-section">
         <Badge variant="info">총 결제 건수: 1,234</Badge>
         <Text size="large">환율 정보</Text>
       </div>
-      
-      <Table 
+
+      <Table
         data={paymentData}
         columns={columns}
         sortable={true}
         pagination={true}
       />
-      
+
       <LoadingSpinner size="medium" />
     </div>
   );
@@ -207,7 +204,7 @@ yarn dev
 - 모든 컴포넌트가 동일한 Design System 사용
 - 브랜드 가이드라인 준수
 
-### 🚀 효율성  
+### 🚀 효율성
 - 별도 CSS 작성 불필요
 - 기존 Design System 컴포넌트 재사용
 
@@ -220,20 +217,16 @@ yarn dev
 ✅ **올바른 저장소 경로**:
 
 - **웹 Design System (Private)**: https://github.com/dealicious-inc/ssm-web
-- **iOS Design System**: https://github.com/dealicious-inc/ssm-mobile-ios-design-system  
+- **iOS Design System**: https://github.com/dealicious-inc/ssm-mobile-ios-design-system
 - **Android Design System**: https://github.com/dealicious-inc/ssm-mobile-android-design-system
 
 ℹ️ **참고**: `ssm-web` 저장소는 private로 되어있어 인증이 필요합니다.
 
-**대안 Design System 저장소들:**
-- **Material-UI**: https://github.com/mui/material-ui
-- **Chakra UI**: https://github.com/chakra-ui/chakra-ui
-- **Ant Design**: https://github.com/ant-design/ant-design
-- **Mantine**: https://github.com/mantinedev/mantine
+> ⚠️ **경고**: MUI, Chakra UI, Ant Design 등 외부 UI 라이브러리는 **절대 사용하면 안 됩니다**. 반드시 위의 dealicious 저장소만 사용하세요.
 
 ## 결론
 
-이 프로젝트의 목적은 **별도의 CSS를 생성하는 것이 아니라**, 기존 Design System 컴포넌트들을 활용하여 Figma 디자인을 React/Vue 컴포넌트로 변환하는 것입니다. 
+이 프로젝트의 목적은 **별도의 CSS를 생성하는 것이 아니라**, 기존 Design System 컴포넌트들을 활용하여 Figma 디자인을 React/Vue 컴포넌트로 변환하는 것입니다.
 
 모든 스타일링은 Design System에서 제공되며, 개발자는 비즈니스 로직에만 집중할 수 있습니다.
 
@@ -255,15 +248,15 @@ yarn add git+ssh://git@github.com/dealicious-inc/ssm-web.git#master
 yarn add git+https://<YOUR_TOKEN>@github.com/dealicious-inc/ssm-web.git#master
 ```
 
-#### 2. 대체 Design System 사용 (fallback)
+#### 2. ❌ 외부 UI 라이브러리 사용 금지
 ```bash
-# Private 저장소 접근이 어려운 경우
-yarn add @mui/material @emotion/react @emotion/styled
-yarn add @mui/icons-material
-
-# 또는 Chakra UI
-yarn add @chakra-ui/react @emotion/react @emotion/styled framer-motion
+# ❌ 절대 사용 금지!
+# yarn add @mui/material  ← 금지
+# yarn add antd  ← 금지
+# yarn add @chakra-ui/react  ← 금지
 ```
+
+> **중요**: Private 저장소 접근이 어렵더라도 외부 UI 라이브러리를 대체재로 사용하면 안 됩니다. 반드시 GitHub Token을 설정하여 `@dealicious/design-system`에 접근해야 합니다.
 
 #### 3. 장기 해결책
 1. **npm 패키지 배포**: `@dealicious/design-system-react` 패키지를 npm registry에 배포
@@ -274,5 +267,3 @@ yarn add @chakra-ui/react @emotion/react @emotion/styled framer-motion
 - `src/services/design-system.ts` 파일에서 실제 존재하는 패키지로 변경
 - `src/services/code-generator.ts`에서 import 경로 수정
 - MCP 서버의 컴포넌트 매핑 로직 업데이트
-
-
