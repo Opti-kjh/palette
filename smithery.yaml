@@ -1,30 +1,5 @@
 # Smithery.ai MCP Server Configuration
 # https://smithery.ai/docs/build/config
 
-runtime: "container"
-
-# Container runtime은 HTTP transport 사용 필수
-startCommand:
-  type: "http"
-  url: "http://localhost:3000"
-  configSchema:
-    type: "object"
-    required:
-      - "FIGMA_ACCESS_TOKEN"
-      - "GITHUB_TOKEN"
-    properties:
-      FIGMA_ACCESS_TOKEN:
-        type: "string"
-        title: "Figma Access Token"
-        description: "Figma Personal Access Token (필수). Figma 디자인에 접근하기 위해 필요합니다."
-        format: "password"
-      GITHUB_TOKEN:
-        type: "string"
-        title: "GitHub Token"
-        description: "GitHub Personal Access Token (필수). dealicious-inc 조직 멤버십 확인 및 디자인 시스템 패키지 접근에 필요합니다."
-        format: "password"
-      FIGMA_MCP_SERVER_URL:
-        type: "string"
-        title: "Figma MCP Server URL"
-        description: "Figma Dev Mode MCP server URL (선택)."
-        default: "http://127.0.0.1:3845/mcp"
+# TypeScript runtime: @smithery/sdk가 자동으로 HTTP transport 처리
+runtime: "typescript"
