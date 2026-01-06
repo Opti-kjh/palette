@@ -20,9 +20,10 @@ COPY . .
 # 빌드
 RUN yarn build
 
-# Smithery CLI로 빌드
-RUN npx -y @smithery/cli build -o .smithery/index.cjs
+# 환경변수 기본값
+ENV PORT=3000
+ENV NODE_ENV=production
 
-# 서버 실행
+# HTTP 서버로 실행
 EXPOSE 3000
-CMD ["node", ".smithery/index.cjs"]
+CMD ["node", "dist/http-server.js"]
