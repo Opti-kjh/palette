@@ -200,12 +200,20 @@ app.post('/mcp', async (req, res) => {
 });
 
 // 서버 시작
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.error(`[HTTP Server] Palette MCP HTTP 서버 시작: http://localhost:${port}`);
+const port = parseInt(process.env.PORT || '3000', 10);
+const host = '0.0.0.0'; // Docker 컨테이너에서 외부 접근 허용
+
+app.listen(port, host, () => {
+  console.error(`[HTTP Server] Palette MCP HTTP 서버 시작: http://${host}:${port}`);
   console.error(`[HTTP Server] Health check: http://localhost:${port}/health`);
   console.error(`[HTTP Server] MCP endpoint: http://localhost:${port}/mcp`);
   console.error(`[HTTP Server] 환경변수:`);
   console.error(`  - FIGMA_ACCESS_TOKEN: ${process.env.FIGMA_ACCESS_TOKEN ? '설정됨' : '미설정'}`);
   console.error(`  - GITHUB_TOKEN: ${process.env.GITHUB_TOKEN ? '설정됨' : '미설정'}`);
+}).on('error', (err: NodeJS.ErrnoException) => {
+  console.error(`[HTTP Server] 서버 시작 실패:`, err);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[HTTP Server] 포트 ${port}가 이미 사용 중입니다.`);
+  }
+  process.exit(1);
 });
