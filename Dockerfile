@@ -10,18 +10,10 @@ RUN apt-get update && \
 WORKDIR /app
 
 # 패키지 파일 복사
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* .yarnrc* ./
+COPY package.json yarn.lock .npmrc .yarnrc ./
 
 # 의존성 설치
-RUN if [ -f yarn.lock ]; then \
-      yarn install --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then \
-      npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then \
-      npm install -g pnpm && pnpm install --frozen-lockfile; \
-    else \
-      npm install; \
-    fi
+RUN yarn install --frozen-lockfile
 
 # 소스 코드 복사
 COPY . .
