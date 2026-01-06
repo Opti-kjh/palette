@@ -2,23 +2,36 @@
  * HTTP 서버 - Container Runtime용
  *
  * Smithery.ai Container runtime에서 사용됩니다.
- * stdio MCP 서버를 HTTP transport로 감쌉니다.
+ * MCP over HTTP transport를 구현합니다.
  */
 
 import express from 'express';
 import cors from 'cors';
-import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { createPaletteServer } from './server.js';
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js';
 
 const app = express();
 
 // CORS 및 JSON 파싱 미들웨어
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+
+// MCP 서버 생성
+const mcpServer = createPaletteServer({
+  figmaAccessToken: process.env.FIGMA_ACCESS_TOKEN,
+  githubToken: process.env.GITHUB_TOKEN,
+  figmaMcpServerUrl: process.env.FIGMA_MCP_SERVER_URL,
+  useFigmaMcp: false, // Container runtime에서는 Figma REST API만 사용
+});
+
+console.error('[HTTP Server] MCP 서버 초기화 완료');
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -49,6 +62,7 @@ app.get('/.well-known/mcp-card', (req, res) => {
 
 // MCP Config Schema - 설정 스키마
 app.get('/.well-known/mcp-config', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.json({
     title: 'MCP Session Configuration',
     description: 'Schema for the /mcp endpoint configuration',
@@ -73,86 +87,113 @@ app.get('/.well-known/mcp-config', (req, res) => {
   });
 });
 
-// MCP endpoint - stdio를 HTTP로 프록시
+// MCP endpoint - JSON-RPC 2.0 over HTTP
 app.post('/mcp', async (req, res) => {
   try {
-    const request = req.body;
+    const { jsonrpc, id, method, params } = req.body;
 
-    // stdio MCP 서버 실행
-    const child = spawn('node', [join(__dirname, 'index.js')], {
-      env: {
-        ...process.env,
-        FIGMA_ACCESS_TOKEN: process.env.FIGMA_ACCESS_TOKEN,
-        GITHUB_TOKEN: process.env.GITHUB_TOKEN,
-        FIGMA_MCP_SERVER_URL: process.env.FIGMA_MCP_SERVER_URL,
-      },
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+    console.error(`[HTTP Server] 요청: ${method}`);
 
-    let responseData = '';
-    let errorData = '';
-
-    child.stdout.on('data', (data) => {
-      responseData += data.toString();
-    });
-
-    child.stderr.on('data', (data) => {
-      errorData += data.toString();
-      console.error('[MCP stderr]:', data.toString());
-    });
-
-    // 요청 전송
-    child.stdin.write(JSON.stringify(request) + '\n');
-    child.stdin.end();
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        console.error('[MCP] Process exited with code:', code);
-        return res.status(500).json({
-          jsonrpc: '2.0',
-          id: request.id || null,
-          error: {
-            code: -32603,
-            message: `Process exited with code ${code}: ${errorData}`,
-          },
-        });
-      }
-
-      try {
-        const response = JSON.parse(responseData);
-        res.json(response);
-      } catch (parseError) {
-        console.error('[MCP] Parse error:', parseError);
-        res.status(500).json({
-          jsonrpc: '2.0',
-          id: request.id || null,
-          error: {
-            code: -32700,
-            message: 'Parse error: Invalid JSON response',
-          },
-        });
-      }
-    });
-
-    child.on('error', (error) => {
-      console.error('[MCP] Process error:', error);
-      res.status(500).json({
+    // JSON-RPC 2.0 검증
+    if (jsonrpc !== '2.0') {
+      return res.status(400).json({
         jsonrpc: '2.0',
-        id: request.id || null,
+        id: id || null,
         error: {
-          code: -32603,
-          message: error.message,
+          code: -32600,
+          message: 'Invalid Request: jsonrpc must be "2.0"',
         },
       });
+    }
+
+    // MCP 메서드 라우팅
+    let result: any;
+
+    switch (method) {
+      case 'tools/list': {
+        const handler = mcpServer['_requestHandlers'].get(ListToolsRequestSchema);
+        if (!handler) throw new Error('tools/list handler not found');
+        result = await handler({ method, params: params || {} });
+        break;
+      }
+
+      case 'tools/call': {
+        const handler = mcpServer['_requestHandlers'].get(CallToolRequestSchema);
+        if (!handler) throw new Error('tools/call handler not found');
+        result = await handler({ method, params });
+        break;
+      }
+
+      case 'prompts/list': {
+        const handler = mcpServer['_requestHandlers'].get(ListPromptsRequestSchema);
+        if (!handler) throw new Error('prompts/list handler not found');
+        result = await handler({ method, params: params || {} });
+        break;
+      }
+
+      case 'prompts/get': {
+        const handler = mcpServer['_requestHandlers'].get(GetPromptRequestSchema);
+        if (!handler) throw new Error('prompts/get handler not found');
+        result = await handler({ method, params });
+        break;
+      }
+
+      case 'resources/list': {
+        const handler = mcpServer['_requestHandlers'].get(ListResourcesRequestSchema);
+        if (!handler) throw new Error('resources/list handler not found');
+        result = await handler({ method, params: params || {} });
+        break;
+      }
+
+      case 'resources/read': {
+        const handler = mcpServer['_requestHandlers'].get(ReadResourceRequestSchema);
+        if (!handler) throw new Error('resources/read handler not found');
+        result = await handler({ method, params });
+        break;
+      }
+
+      case 'initialize': {
+        // 초기화 응답
+        result = {
+          protocolVersion: '2024-11-05',
+          capabilities: {
+            tools: {},
+            prompts: {},
+            resources: {},
+          },
+          serverInfo: {
+            name: 'palette',
+            version: '1.3.3',
+          },
+        };
+        break;
+      }
+
+      case 'ping': {
+        result = {};
+        break;
+      }
+
+      default:
+        throw new Error(`Unsupported method: ${method}`);
+    }
+
+    console.error(`[HTTP Server] 응답 성공: ${method}`);
+
+    res.json({
+      jsonrpc: '2.0',
+      id,
+      result,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[HTTP Server] 오류:', error);
-    res.status(500).json({
+    res.status(200).json({
       jsonrpc: '2.0',
       id: req.body?.id || null,
       error: {
-        code: -32603,
+        code: error.code || -32603,
         message: error instanceof Error ? error.message : 'Internal error',
+        data: error.data,
       },
     });
   }
@@ -164,4 +205,7 @@ app.listen(port, () => {
   console.error(`[HTTP Server] Palette MCP HTTP 서버 시작: http://localhost:${port}`);
   console.error(`[HTTP Server] Health check: http://localhost:${port}/health`);
   console.error(`[HTTP Server] MCP endpoint: http://localhost:${port}/mcp`);
+  console.error(`[HTTP Server] 환경변수:`);
+  console.error(`  - FIGMA_ACCESS_TOKEN: ${process.env.FIGMA_ACCESS_TOKEN ? '설정됨' : '미설정'}`);
+  console.error(`  - GITHUB_TOKEN: ${process.env.GITHUB_TOKEN ? '설정됨' : '미설정'}`);
 });
