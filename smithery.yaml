@@ -1,5 +1,31 @@
 # Smithery.ai MCP Server Configuration
 # https://smithery.ai/docs/build/config
 
-# TypeScript runtime: @smithery/sdk가 자동으로 HTTP transport 처리
-runtime: "typescript"
+# Container runtime: libsecret 설치를 위한 custom Dockerfile 사용
+runtime: "container"
+
+# HTTP transport 설정
+startCommand:
+  type: "http"
+  url: "http://localhost:3000"
+
+# 환경 변수 스키마 (JSON Schema 형식)
+configSchema:
+  type: "object"
+  properties:
+    FIGMA_ACCESS_TOKEN:
+      type: "string"
+      title: "Figma Personal Access Token"
+      description: "Figma Dev Mode에서 발급받은 Personal Access Token (필수)"
+    GITHUB_TOKEN:
+      type: "string"
+      title: "GitHub Personal Access Token"
+      description: "dealicious-inc 조직 멤버 인증용 GitHub Token (필수)"
+    FIGMA_MCP_SERVER_URL:
+      type: "string"
+      title: "Figma MCP Server URL"
+      description: "Figma Dev Mode MCP server URL (선택, 기본값: http://127.0.0.1:3845/mcp)"
+      default: "http://127.0.0.1:3845/mcp"
+  required:
+    - FIGMA_ACCESS_TOKEN
+    - GITHUB_TOKEN

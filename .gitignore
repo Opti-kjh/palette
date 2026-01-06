@@ -89,6 +89,5 @@ jspm_packages/
 # Specstory
 .specstory/
 
-# Docker (Smithery TypeScript runtime은 Dockerfile 사용 안함)
-Dockerfile
+# Docker backup files
 Dockerfile.backup
