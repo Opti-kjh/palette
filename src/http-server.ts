@@ -27,26 +27,23 @@ app.get('/health', (req, res) => {
 
 // MCP Server Card - 서버 메타데이터
 app.get('/.well-known/mcp-card', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.json({
-    name: 'palette',
-    version: '1.3.1',
-    description: 'Figma 디자인을 디자인 시스템 컴포넌트로 변환하는 MCP 서버',
-    capabilities: {
-      tools: {
-        listChanged: false,
-      },
-      prompts: {
-        listChanged: false,
-      },
-      resources: {
-        subscribe: false,
-        listChanged: false,
-      },
+    title: 'Palette MCP',
+    description: 'Figma 디자인을 @dealicious/design-system 컴포넌트로 변환하는 MCP 서버. dealicious-inc 조직 멤버만 사용 가능합니다.',
+    shortDescription: 'Figma → Design System 컴포넌트 변환',
+    iconUrl: 'https://raw.githubusercontent.com/Opti-kjh/palette/main/assets/logo.svg',
+    repository: {
+      type: 'git',
+      url: 'https://github.com/Opti-kjh/palette',
     },
+    homepage: 'https://github.com/Opti-kjh/palette',
     author: {
       name: 'KJH',
       email: 'kjh@deali.net',
     },
+    license: 'MIT',
+    tags: ['figma', 'design-system', 'react', 'vue', 'code-generation'],
   });
 });
 
