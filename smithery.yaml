@@ -4,7 +4,5 @@
 # Use the custom Dockerfile to ensure system dependencies (libsecret) are installed
 dockerfile: "Dockerfile"
 startCommand:
-  type: stdio
-  command: node
-  args:
-    - dist/index.js
+  command: "node"
+  args: ["dist/index.js"]
