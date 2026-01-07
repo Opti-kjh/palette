@@ -1,5 +1,5 @@
 # Smithery.ai MCP Server Configuration
 # https://smithery.ai/docs/build/config
 
-# TypeScript runtime: @smithery/sdk가 자동으로 처리
-runtime: "typescript"
+# Use the custom Dockerfile to ensure system dependencies (libsecret) are installed
+dockerfile: "Dockerfile"
