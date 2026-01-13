@@ -1,8 +1,6 @@
 # Smithery.ai MCP Server Configuration
-# https://smithery.ai/docs/build/config
+# https://smithery.ai/docs/build/project-config/smithery-yaml
 
-startCommand:
-  type: stdio
-  command: node
-  args:
-    - dist/index.js
+runtime: "typescript"
+env:
+  NODE_ENV: "production"
