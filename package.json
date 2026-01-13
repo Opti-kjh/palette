@@ -1,6 +1,6 @@
 {
   "name": "palette-mcp",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "resolutions": {
     "keytar": "npm:noop-package@1.0.0"
   },
